@@ -1,0 +1,122 @@
+
+R : Copyright 2004, The R Foundation for Statistical Computing
+Version 1.9.1  (2004-06-21), ISBN 3-900051-00-3
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+>  tol <- 1e-6
+> 
+>  library(bernor)
+>  load("salam-old.RData")
+>  attach(salam)
+> 
+>  beta <- c(0.91, -3.01, -0.49, 3.54)
+>  sigma <- c(1.18, 0.98)
+> 
+>  moo <- model("gauss", length(i), 1)
+> 
+>  nmiss <- 100
+>  set.seed(42)
+>  W <- bnbigw(y, beta, sigma, nmiss, x, z, i, moo, nbatch = nmiss)
+>  print(W)
+           [,1]       [,2]       [,3]       [,4]      [,5]      [,6]
+[1,]  15.304170   8.975081   6.584772   5.706515 -16.59559  14.20984
+[2,]   8.975081  13.142046   8.479701   9.189201 -24.04999  32.75537
+[3,]   6.584772   8.479701   6.349336   6.236448 -17.14797  22.03583
+[4,]   5.706515   9.189201   6.236448   6.657971 -17.47470  23.75731
+[5,] -16.595589 -24.049987 -17.147970 -17.474703  48.37134 -65.43608
+[6,]  14.209841  32.755372  22.035828  23.757314 -65.43608  99.33988
+> 
+>  nobs <- ncol(y)
+>  nparm <- length(beta) + length(sigma)
+> 
+>  my.bnbigw <- function(y, beta, sigma, nmiss, x, z, iv, model, nbatch) {
++      nbatch <- as.integer(nbatch)
++      nmiss <- as.integer(nmiss)
++      blen <- nmiss %/% nbatch
++      if (nmiss != nbatch * blen) {
++          cat("nmiss =", nmiss, "\n")
++          cat("nbatch =", nbatch, "\n")
++          cat("blen =", blen, "\n")
++          stop("oopsie")
++      }
++      W <- matrix(0, nparm, nparm)
++      save.random.seed <- .Random.seed
++      Shat.bmean <- rep(0, nparm)
++      for (i in 1:nmiss) {
++          Shat <- rep(0, nparm)
++          b <- rmiss(model)
++          for (j in 1:nobs) {
++              foo <- bernor(y[ , j], beta, b, sigma, x, z, iv, deriv = 1)
++              save.current.random.seed <- .Random.seed
++              .Random.seed <<- save.random.seed
++              bar <- bnmarg(y[ , j], beta, sigma, nmiss, x, z, iv, model,
++                  deriv = 1, want.weights = TRUE)
++              .Random.seed <<- save.current.random.seed
++              piece <- (foo$gradient - bar$gradient) * nmiss * bar$weigh[i]
++              Shat <- Shat + piece
++          }
++          Shat <- Shat / nobs
++          Shat.bmean <- Shat.bmean + Shat
++          if (i %% blen == 0) {
++              Shat.bmean <- Shat.bmean / blen
++              W <- W + outer(Shat.bmean, Shat.bmean)
++              Shat.bmean <- Shat.bmean * 0
++          }
++      }
++      W <- W * blen / nbatch
++      return(W)
++  }
+> 
+>  set.seed(42)
+>  myW <- my.bnbigw(y, beta, sigma, nmiss, x, z, i, moo, nbatch = nmiss)
+>  print(myW)
+           [,1]       [,2]       [,3]       [,4]      [,5]      [,6]
+[1,]  15.304170   8.975081   6.584772   5.706515 -16.59559  14.20984
+[2,]   8.975081  13.142046   8.479701   9.189201 -24.04999  32.75537
+[3,]   6.584772   8.479701   6.349336   6.236448 -17.14797  22.03583
+[4,]   5.706515   9.189201   6.236448   6.657971 -17.47470  23.75731
+[5,] -16.595589 -24.049987 -17.147970 -17.474703  48.37134 -65.43608
+[6,]  14.209841  32.755372  22.035828  23.757314 -65.43608  99.33988
+> 
+>  all.equal(W, myW, tolerance = tol)
+[1] TRUE
+> 
+>  ############### now with batch means ###############
+> 
+>  set.seed(43)
+>  W <- bnbigw(y, beta, sigma, nmiss, x, z, i, moo, nbatch = 10)
+>  print(W)
+            [,1]        [,2]         [,3]       [,4]        [,5]        [,6]
+[1,]  55.4732478 -0.22233609  28.33840313 -0.9534940 -44.6637558  34.4423873
+[2,]  -0.2223361  0.14634799   0.03953058  0.1673876   0.2031586  -0.3140537
+[3,]  28.3384031  0.03953058  14.94164662 -0.2332520 -23.1211896  17.8008244
+[4,]  -0.9534940  0.16738760  -0.23325202  0.2241065   0.6797178  -0.6728575
+[5,] -44.6637558  0.20315863 -23.12118960  0.6797178  36.7713878 -28.4175308
+[6,]  34.4423873 -0.31405372  17.80082437 -0.6728575 -28.4175308  22.2541578
+>  set.seed(43)
+>  myW <- my.bnbigw(y, beta, sigma, nmiss, x, z, i, moo, nbatch = 10)
+>  print(myW)
+            [,1]        [,2]         [,3]       [,4]        [,5]        [,6]
+[1,]  55.4732478 -0.22233609  28.33840313 -0.9534940 -44.6637558  34.4423873
+[2,]  -0.2223361  0.14634799   0.03953058  0.1673876   0.2031586  -0.3140537
+[3,]  28.3384031  0.03953058  14.94164662 -0.2332520 -23.1211896  17.8008244
+[4,]  -0.9534940  0.16738760  -0.23325202  0.2241065   0.6797178  -0.6728575
+[5,] -44.6637558  0.20315863 -23.12118960  0.6797178  36.7713878 -28.4175308
+[6,]  34.4423873 -0.31405372  17.80082437 -0.6728575 -28.4175308  22.2541578
+> 
+>  all.equal(W, myW, tolerance = tol)
+[1] TRUE
+> 
+> 

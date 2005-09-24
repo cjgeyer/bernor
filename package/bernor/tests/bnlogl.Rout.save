@@ -1,0 +1,148 @@
+
+R : Copyright 2004, The R Foundation for Statistical Computing
+Version 1.9.1  (2004-06-21), ISBN 3-900051-00-3
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+>  tol <- 1e-6
+> 
+>  library(bernor)
+>  load("salam-old.RData")
+>  attach(salam)
+> 
+>  beta <- c(0.91, -3.01, -0.49, 3.54)
+>  sigma <- c(1.18, 0.98)
+> 
+>  moo <- model("gauss", length(i), 1)
+> 
+>  nmiss <- 100
+>  set.seed(42)
+>  out <- bnlogl(y, beta, sigma, nmiss, x, z, i, moo)
+>  print(out)
+$value
+[1] -236.477
+
+> 
+>  my.bnlogl <- function(y, beta, sigma, nmiss, x, z, iv, model) {
++      save.random.seed <- .Random.seed
++      logf <- rep(NA, ncol(y))
++      for (i in 1:ncol(y)) {
++          .Random.seed <<- save.random.seed
++          out <- bnmarg(y[ , i], beta, sigma, nmiss, x, z, iv, moo)
++          logf[i] <- out$value
++      }
++      return(sum(logf))
++  }
+> 
+>  set.seed(42)
+>  my.out <- my.bnlogl(y, beta, sigma, nmiss, x, z, i, moo)
+>  print(my.out)
+[1] -236.477
+>  all.equal(out$value, my.out, tolerance = tol)
+[1] TRUE
+> 
+>  nparm <- length(beta) + length(sigma)
+>  epsilon <- 1e-8
+> 
+>  my.gradient <- rep(0, nparm)
+>  for (j in 1:nparm) {
++      beta.eps <- beta
++      sigma.eps <- sigma
++      if (j <= length(beta)) {
++          beta.eps[j] <- beta[j] + epsilon
++      } else {
++          sigma.eps[j - length(beta)] <- sigma[j - length(beta)] + epsilon
++      }
++      set.seed(42)
++      out.eps <- bnlogl(y, beta.eps, sigma.eps, nmiss, x, z, i, moo)
++      my.gradient[j] <- (out.eps$value - out$value) / epsilon
++  }
+>  print(my.gradient)
+[1]  17.258864   8.479964   7.324959   3.331323 -38.689083  -7.652167
+> 
+>  set.seed(42)
+>  out <- bnlogl(y, beta, sigma, nmiss, x, z, i, moo, deriv = 3)
+>  print(out)
+$value
+[1] -236.477
+
+$gradient
+[1]  17.258852   8.479957   7.324954   3.331324 -38.689093  -7.652173
+
+$hessian
+           [,1]       [,2]       [,3]        [,4]        [,5]       [,6]
+[1,] -47.203377 -22.128566 -28.999674 -14.5518065   3.9907768  11.146229
+[2,] -22.128566 -21.630656 -14.088962 -13.7804284  -4.5230263   7.583561
+[3,] -28.999674 -14.088962 -29.523348 -14.6015950   1.9120136  12.810130
+[4,] -14.551807 -13.780428 -14.601595 -14.4885595  -0.7826912   9.594303
+[5,]   3.990777  -4.523026   1.912014  -0.7826912 -26.2604122 -11.833006
+[6,]  11.146229   7.583561  12.810130   9.5943032 -11.8330058 -14.028091
+
+$bigv
+           [,1]       [,2]      [,3]       [,4]      [,5]       [,6]
+[1,]  87.518169  25.945554  35.67212   6.782284 -72.99341 -24.813036
+[2,]  25.945554  11.647745  10.02441   3.528126 -36.24051  -9.357740
+[3,]  35.672121  10.024411  14.82688   2.748180 -31.01198 -10.127995
+[4,]   6.782284   3.528126   2.74818   1.288596 -14.31203  -2.962517
+[5,] -72.993407 -36.240514 -31.01198 -14.312027 166.34262  32.671796
+[6,] -24.813036  -9.357740 -10.12799  -2.962517  32.67180   8.456100
+
+>  all.equal(out$gradient, my.gradient, tolerance = tol)
+[1] TRUE
+>  
+>  my.hessian <- matrix(0, nparm, nparm)
+>  for (j in 1:nparm) {
++      beta.eps <- beta
++      sigma.eps <- sigma
++      if (j <= length(beta)) {
++          beta.eps[j] <- beta[j] + epsilon
++      } else {
++          sigma.eps[j - length(beta)] <- sigma[j - length(beta)] + epsilon
++      }
++      set.seed(42)
++      out.eps <- bnlogl(y, beta.eps, sigma.eps, nmiss, x, z, i, moo, deriv = 1)
++      my.hessian[ , j] <- (out.eps$gradient - out$gradient) / epsilon
++  }
+>  print(my.hessian)
+           [,1]       [,2]       [,3]        [,4]        [,5]       [,6]
+[1,] -47.203373 -22.128566 -28.999676 -14.5518079   3.9907810  11.146233
+[2,] -22.128565 -21.630655 -14.088963 -13.7804300  -4.5230225   7.583566
+[3,] -28.999671 -14.088960 -29.523349 -14.6015954   1.9120175  12.810135
+[4,] -14.551805 -13.780428 -14.601596 -14.4885606  -0.7826883   9.594307
+[5,]   3.990774  -4.523029   1.912014  -0.7826884 -26.2604225 -11.833016
+[6,]  11.146232   7.583567  12.810132   9.5943006 -11.8329912 -14.028077
+> 
+>  all.equal(out$hessian, my.hessian, tolerance = tol)
+[1] TRUE
+>  
+>  my.bigv <- matrix(0, nparm, nparm)
+>  for (j in 1:ncol(y)) {
++      set.seed(42)
++      margout <- bnmarg(y[ , j], beta, sigma, nmiss, x, z, i, moo, deriv = 1)
++      my.bigv <- my.bigv + outer(margout$gradient, margout$gradient)
++  }
+>  my.bigv <- my.bigv / ncol(y)
+> 
+>  print(my.bigv)
+           [,1]       [,2]      [,3]       [,4]      [,5]       [,6]
+[1,]  87.518169  25.945554  35.67212   6.782284 -72.99341 -24.813036
+[2,]  25.945554  11.647745  10.02441   3.528126 -36.24051  -9.357740
+[3,]  35.672121  10.024411  14.82688   2.748180 -31.01198 -10.127995
+[4,]   6.782284   3.528126   2.74818   1.288596 -14.31203  -2.962517
+[5,] -72.993407 -36.240514 -31.01198 -14.312027 166.34262  32.671796
+[6,] -24.813036  -9.357740 -10.12799  -2.962517  32.67180   8.456100
+>  all.equal(out$bigv, my.bigv)
+[1] TRUE
+> 
+> 

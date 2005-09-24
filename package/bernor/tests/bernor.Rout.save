@@ -1,0 +1,110 @@
+
+R : Copyright 2004, The R Foundation for Statistical Computing
+Version 1.9.1  (2004-06-21), ISBN 3-900051-00-3
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+>  tol <- 1e-6
+> 
+>  library(bernor)
+>  load("salam-old.RData")
+>  attach(salam)
+>  
+>  set.seed(42)
+> 
+>  beta <- rnorm(ncol(x))
+>  sigma <- rgamma(length(unique(i)), 5, 5)
+>  b <- rnorm(ncol(z))
+> 
+>  out <- bernor(y[ , 1], beta, b, sigma, x, z, i)
+>  print(out)
+$value
+[1] -179.9018
+
+> 
+>  my.bernor <- function(y, beta, b, sigma, x, z, i) {
++      eta <- x %*% beta + z %*% (sigma[i] * b)
++      p <- 1 / (1 + exp(- eta))
++      sum(dbinom(y, 1, p, log = TRUE)) + sum(dnorm(b, log = TRUE))
++  }
+> 
+>  my.value <- my.bernor(y[ , 1], beta, b, sigma, x, z, i)
+>  print(my.value)
+[1] -179.9018
+>  all.equal(out$value, my.value, tolerance = tol)
+[1] TRUE
+> 
+>  nparm <- length(beta) + length(sigma)
+>  epsilon <- 1e-8
+> 
+>  my.gradient <- rep(0, nparm)
+>  for (j in 1:nparm) {
++      beta.eps <- beta
++      sigma.eps <- sigma
++      if (j <= length(beta)) {
++          beta.eps[j] <- beta[j] + epsilon
++      } else {
++          sigma.eps[j - length(beta)] <- sigma[j - length(beta)] + epsilon
++      }
++      out.eps <- bernor(y[ , 1], beta.eps, b, sigma.eps, x, z, i)
++      my.gradient[j] <- (out.eps$value - out$value) / epsilon
++  }
+>  print(my.gradient)
+[1] -21.155472 -17.045102  -3.699526  -1.917746 -24.135412 -18.003811
+> 
+>  out <- bernor(y[ , 1], beta, b, sigma, x, z, i, deriv = 2)
+>  print(out)
+$value
+[1] -179.9018
+
+$gradient
+[1] -21.155465 -17.045097  -3.699523  -1.917743 -24.135411 -18.003808
+
+$hessian
+           [,1]      [,2]       [,3]       [,4]        [,5]       [,6]
+[1,] -16.891791 -8.836126 -8.3651850 -4.0673578  -1.2763373  12.287938
+[2,]  -8.836126 -8.836126 -4.0673578 -4.0673578  -1.5927213   6.606332
+[3,]  -8.365185 -4.067358 -8.3651850 -4.0673578  -0.8674507  10.598463
+[4,]  -4.067358 -4.067358 -4.0673578 -4.0673578  -0.8322702   5.333760
+[5,]  -1.276337 -1.592721 -0.8674507 -0.8322702 -11.9198873   7.603559
+[6,]  12.287938  6.606332 10.5984627  5.3337604   7.6035594 -36.193863
+
+>  all.equal(out$gradient, my.gradient, tolerance = tol)
+[1] TRUE
+>  
+>  my.hessian <- matrix(0, nparm, nparm)
+>  for (j in 1:nparm) {
++      beta.eps <- beta
++      sigma.eps <- sigma
++      if (j <= length(beta)) {
++          beta.eps[j] <- beta[j] + epsilon
++      } else {
++          sigma.eps[j - length(beta)] <- sigma[j - length(beta)] + epsilon
++      }
++      out.eps <- bernor(y[ , 1], beta.eps, b, sigma.eps, x, z, i, deriv = 1)
++      my.hessian[ , j] <- (out.eps$gradient - out$gradient) / epsilon
++  }
+>  print(my.hessian)
+           [,1]      [,2]       [,3]       [,4]        [,5]       [,6]
+[1,] -16.891791 -8.836126 -8.3651848 -4.0673577  -1.2763369  12.287938
+[2,]  -8.836126 -8.836126 -4.0673580 -4.0673577  -1.5927213   6.606332
+[3,]  -8.365185 -4.067358 -8.3651851 -4.0673578  -0.8674506  10.598463
+[4,]  -4.067358 -4.067358 -4.0673579 -4.0673578  -0.8322701   5.333760
+[5,]  -1.276336 -1.592721 -0.8674501 -0.8322697 -11.9198862   7.603560
+[6,]  12.287938  6.606332 10.5984626  5.3337601   7.6035601 -36.193863
+> 
+>  all.equal(out$hessian, my.hessian, tolerance = tol)
+[1] TRUE
+>  
+> 

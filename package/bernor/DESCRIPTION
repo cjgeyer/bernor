@@ -1,0 +1,11 @@
+Package: bernor
+Version: 0.3.3
+Date: 21 August 2004
+Title: Bernoulli Regression with Normal Random Effects
+Author: Charles J. Geyer <charlie@stat.umn.edu> and
+    Yun Ju Sung <yunju@u.washington.edu>
+Maintainer: Charles J. Geyer <charlie@stat.umn.edu>
+Depends: R (>= 1.8.0)
+Description: see title
+License: X11 (http://www.x.org/Downloads_terms.html)
+Packaged: Thu Jan  6 15:13:08 2005; charlie

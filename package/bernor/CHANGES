@@ -1,0 +1,23 @@
+
+ 0.1   First "release" -- appears to work and do bernoulli regression with
+           normal random effects.  Big W is really slow.
+
+ 0.2   Redesign access to weight vector, don't always return to R.
+       Speed up big W using method of batch means.
+       Big V now as given by (6a) in mcla.tex (was off by factor of nobs)
+       mcla.tex in inst/doc
+
+ 0.3   remove O(nmiss) memory requirement for bnmarg when weights not wanted
+       now all routines use O(dim(x) + dim(y) + nparm^2)
+       allows unlimited sample sizes (if you have the patience to wait)
+
+ 0.3.1 added "booth" toy data set
+       fixed tests/*.R so they give o. k. results with R-1.9.1
+
+ 0.3.2 changed "salam" toy data set back to parameterization used in Booth
+       and Hobert (fixed effects R/R, R/W, etc.)
+
+ 0.3.3 changed "toy" toy data set to have evidence of creation
+
+       added directory inst/makedata that shows where the data sets
+       came from

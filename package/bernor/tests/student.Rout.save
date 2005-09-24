@@ -1,0 +1,43 @@
+
+R : Copyright 2004, The R Foundation for Statistical Computing
+Version 1.9.0  (2004-04-12), ISBN 3-900051-00-3
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+>  library(bernor)
+> 
+>  print(models())
+[1] "gaussian"  "student-t"
+> 
+>  d <- 7
+>  scale <- 1.2
+>  df <- 3.5
+>  moo <- model("stu", d, c(scale, df))
+> 
+>  invisible(runif(1))
+> 
+>  save.seed <- .Random.seed
+>  x <- rmiss(moo)
+> 
+>  .Random.seed <- save.seed
+>  x.too <- scale * rt(d, df)
+>  all.equal(x, x.too)
+[1] TRUE
+> 
+>  doo <- dmiss(x, moo)
+>  doo.too <- sum(dt(x / scale, df = df, log = TRUE)) - d * log(scale)
+>  all.equal(doo, doo.too)
+[1] TRUE
+> 
+> 
