@@ -1,0 +1,14 @@
+
+To verify long (Monte Carlo sample size 1e7) in examples.Rnw (above)
+run the following in order (latter uses output of former)
+Note that examples.Rnw loads the output (same prefix, Rout suffix)
+
+doit.R
+doit2.R
+
+To verify the MCMLE in Booth and Hobert are correct by MCMC
+run the following in order (latter uses output of former)
+
+mcmc1.R
+mcmc2.R
+

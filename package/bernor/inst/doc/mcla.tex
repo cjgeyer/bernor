@@ -1,0 +1,330 @@
+
+\documentclass{article}
+
+\usepackage{indentfirst}
+\usepackage{amsmath}
+\DeclareMathOperator{\logit}{logit}
+\DeclareMathOperator{\var}{var}
+
+\begin{document}
+
+\title{Monte Carlo Likelihood Approximation}
+
+\author{Yun Ju Sung \and Charles J. Geyer}
+
+\maketitle
+
+\tableofcontents
+
+\section{Monte Carlo Likelihood Approximation}
+
+Let $f_\theta(x, y)$ be the complete data density for a missing data model,
+the missing data being $x$ and the observed data being $y$.
+Suppose we have observed data $y_1$, $\ldots$, $y_n$ which are
+independent and identically distributed (IID) and
+simulations $x_1$, $\ldots$, $x_m$ which are IID from a known importance
+sampling distribution with density $h$.
+
+The (observed data) log likelihood for this model is
+\begin{equation} \label{eq:logl}
+   l_n(\theta) = \sum_{j = 1}^n \log f_\theta(y_j)
+\end{equation}
+where
+$$
+   f_\theta(y) = \int f_\theta(x, y) \, d x
+$$
+is the marginal for $y$.
+
+The Monte Carlo likelihood approximation for \eqref{eq:logl} is
+\begin{subequations}
+\begin{equation} \label{eq:mclogl}
+   l_{m, n}(\theta)
+   =
+   \sum_{j = 1}^n \log f_{m, \theta}(y_j)
+\end{equation}
+where
+\begin{equation} \label{eq:mcmarg}
+   f_{\theta, m}(y)
+   =
+   \frac{1}{m} \sum_{i = 1}^m \frac{f_\theta(x_i, y)}{h(x_i)}.
+\end{equation}
+\end{subequations}
+The maximizer $\hat{\theta}_{m, n}$ of \eqref{eq:mclogl} is the Monte Carlo
+(approximation to the) MLE (the MCMLE).
+
+Derivatives of \eqref{eq:mclogl} are, of course,
+$$
+   \nabla^k l_{m, n}(\theta)
+   =
+   \sum_{j = 1}^n \nabla^k \log f_{m, \theta}(y_j)
+$$
+where $\nabla$ denotes differentiation with respect to $\theta$,
+and derivatives of \eqref{eq:mcmarg} are
+\begin{subequations}
+\begin{equation} \label{eq:del-marg}
+   \nabla f_{\theta, m}(y)
+   =
+   \sum_{i = 1}^m
+   \nabla \log f_\theta(x_i, y) \cdot v_\theta(x_i, y),
+\end{equation}
+where
+\begin{equation} \label{eq:weigh}
+   v_\theta(x, y)
+   =
+   \frac{\displaystyle \frac{f_\theta(x, y)}{h(x)}}
+   {\displaystyle \sum_{i = 1}^m \frac{f_\theta(x_i, y)}{h(x_i)}},
+\end{equation}
+and
+\begin{equation} \label{eq:del-sq-marg}
+\begin{split}
+  \nabla^2 \log f_{\theta, m}(y)
+   & =
+   \sum_{i = 1}^m 
+   \nabla^2 \log f_\theta(x_i, y)
+   \cdot v_\theta(x_i, y)
+   \\
+   & \quad
+   +
+   \sum_{i = 1}^m 
+   \bigl(\nabla \log f_\theta(x_i, y)\bigr)
+   \bigl(\nabla \log f_\theta(x_i, y)\bigr)^T
+   \cdot v_\theta(x_i, y)
+   \\
+   & \quad
+   -
+   \bigl(\nabla \log f_{\theta, m}(y)\bigr)
+   \bigl(\nabla \log f_{\theta, m}(y)\bigr)^T.
+\end{split}
+\end{equation}
+\end{subequations}
+These derivative formulas are not obvious but are derived
+as equations (4.8), (4.9), (4.12), and (4.13) in the first author's thesis.
+%%% NOTE: need to change to equation numbers in paper.
+
+\section{Asymptotic Variance}
+
+The asymptotic variance of $\hat{\theta}_{m, n}$, including
+both the sampling variation in $y_1$, $\ldots$, $y_n$
+and the Monte Carlo variation in $x_1$, $\ldots$, $x_m$ is
+\begin{equation} \label{eq:asymp-var}
+   J(\theta)^{-1}
+   \left( \frac{V(\theta)}{n} + \frac{W(\theta)}{m} \right)
+   J(\theta)^{-1}
+\end{equation}
+where
+\begin{subequations}
+\begin{align}
+   V(\theta) & = \var\{ \nabla \log f_\theta(Y) \}
+   \label{eq:v-theo}
+   \\
+   J(\theta) & = E\{ - \nabla^2 \log f_\theta(Y) \}
+   \label{eq:j-theo}
+   \\
+   W(\theta)
+   & =
+   \var\left\{
+      E\biggl[ \frac{\nabla f_\theta(X \mid Y)}{h(X)} \biggm| X \biggr]
+   \right\}
+   \label{eq:w-theo}
+\end{align}
+\end{subequations}
+where $X$ and $Y$ here have the same distribution as $x_i$ and $y_j$,
+respectively.
+This is the content of Theorem~3.3.1 in the first author's thesis.
+%%% NOTE: need to change to equation numbers in paper.
+
+The first two of these quantities have obvious ``plug-in'' estimators
+\begin{subequations}
+\begin{align}
+   \widehat{V}_{m, n}(\theta)
+   & =
+   \frac{1}{n} \sum_{j = 1}^n
+   \bigl(\nabla \log f_{\theta, m}(y_j)\bigr)
+   \bigl(\nabla \log f_{\theta, m}(y_j)\bigr)^T
+   \label{eq:v-plug}
+   \\
+   \widehat{J}_{m, n}(\theta)
+   & =
+   -
+   \frac{1}{n} \sum_{j = 1}^n
+   \nabla^2 \log f_{\theta, m}(y_j)
+   \label{eq:j-plug}
+\end{align}
+Thus a natural plug-in estimator is
+\begin{equation} \label{eq:w}
+   \widehat{W}_{m, n}(\theta)
+   =
+   \frac{1}{m} \sum_{i = 1}^m
+   \widehat{S}_{m, n}(\theta, x_i)
+   \widehat{S}_{m, n}(\theta, x_i)^T
+\end{equation}
+where
+\begin{equation} \label{eq:s}
+   \widehat{S}_{m, n}(\theta, x)
+   =
+   \frac{1}{n} \sum_{j = 1}^n
+   \bigl(
+   \nabla \log f_{\theta}(x, y_j)
+   -
+   \nabla \log f_{\theta, m}(y_j)
+   \bigr)
+   \cdot
+   \frac{f_{\theta}(x, y_j)}
+   {f_{\theta, m}(y_j) h(x)}
+\end{equation}
+\end{subequations}
+See equations (2.7) and (2.9) in the first author's thesis.
+%%% NOTE: need to change to equation numbers in paper.
+
+Estimation of $W$ using \eqref{eq:w} and \eqref{eq:s} has the drawback
+that it either uses $O(m p)$ memory storing all the $\log f_{\theta, m}(y_j)$
+and their derivatives, where $p$ is the dimension of the parameter
+vector $\theta$ or it uses $O(m n p)$ time recalculating these quantities.
+Neither alternative is attractive when $m$ and $n$ are large.
+
+Thus we use an alternative method of estimating $W$ based on the method of
+batch means, which is usually only used for time series.  Let $n = b \cdot l$,
+where $b$ and $l$ are positive integers, called the \emph{batch number}
+and \emph{batch length}, respectively.
+For $k = 1$, $\ldots$, $b$ calculate
+\begin{subequations}
+\begin{equation} \label{eq:s-bm}
+   \widetilde{S}_{m, n, k}(\theta)
+   =
+   \frac{1}{l}
+   \sum_{i = (k - 1) l + 1}^{k l}
+   \widehat{S}_{m, n}(\theta, x_i)
+\end{equation}
+and use
+\begin{equation} \label{eq:w-bm}
+   \widetilde{W}_{m, n}(\theta)
+   =
+   \frac{l}{b} \sum_{k = 1}^b
+   \widetilde{S}_{m, n, k}(\theta)
+   \widetilde{S}_{m, n, k}(\theta)^T.
+\end{equation}
+The factor $l$ in \eqref{eq:w-bm} comes from the fact that the batch means
+\eqref{eq:s-bm} have $1 / l$ times the variance of the individual items
+\eqref{eq:s}.
+\end{subequations}
+
+Using the method of batch means we can estimate $W$ using $O(p)$ memory
+and only $O(b m p)$ in recalculation.  Since the total time is necessarily
+at least $O(m n p) + O(b p^2)$, this recalculation is negligible so long
+as $b$ is much smaller than $n$.
+
+\section{Bernoulli Regression with Random Effects}
+
+\subsection{Normal Random Effects}
+
+The \texttt{bernor} package up through version~0.2 does only
+normal random effects.
+
+\subsubsection{Complete Data Density}
+
+The complete data density that for Bernoulli regression
+with normal random effects: the response $y$ is conditionally Bernoulli
+given the fixed effect vector $\beta$ and the random effect vector $b$.
+For this model we change notation, denoting the missing data by $b$ rather $x$,
+which we used in the general discussion (to avoid confusion with
+``big $X$'' defined presently).
+
+The ``other data'' for the problem consist of model matrices $X$ and $Z$,
+both having row dimension equal to the length of $y$,
+$X$ having column dimension equal to the length of $\beta$,
+and $Z$ having column dimension equal to the length of $b$.
+Then the ``linear predictor'' is
+\begin{equation} \label{eq:eta}
+   \eta = X \beta + Z \Sigma b
+\end{equation}
+where $\Sigma$ is a diagonal matrix that specifies the variance components.
+In R the linear predictor can be specified by
+\begin{verbatim}
+eta <- X %*% beta + Z %*% (sigma[i] * b)
+\end{verbatim}
+where \texttt{sigma[i]} is the diagonal of $\Sigma$, \texttt{sigma} being
+a vector of scale parameters for the random effects and \texttt{i} being
+an index vector that says which scale parameter goes with which random effect
+(the lengths of \texttt{i} and \texttt{b} are equal, and each element of
+\texttt{i} is an integer in \texttt{seq(along = sigma)}).
+
+Then
+\begin{verbatim}
+p <- 1 / (1 + exp(- eta))
+\end{verbatim}
+is the vector of success probabilities.
+The complete data log density (or complete data log likelihood) is then
+$$
+   \log f_\theta(y, b)
+   =
+   \sum y \bigl[ \log(p) + (1 - y) \log(1 - p) \bigr]
+   +
+   \sum \log \phi(b)
+$$
+where the first sum runs
+over elements of $y$ and $p$ (which are the same length),
+the second sum runs over elements of $b$,
+and $\phi$ is the density of elements of $b$,
+which are assumed to be IID mean zero normal.
+The parameter vector $\theta$ combines $\beta$ and $\sigma$.
+
+\subsubsection{Gradient}
+
+There are two types of elements of the gradient vector (partials with
+respect to $\theta$'s that are $\beta$'s and partials with respect to
+$\theta$'s that are $\sigma$'s).  The first are
+\begin{subequations}
+\begin{equation} \label{eq:grad-beta-vec}
+   \nabla_\beta \log f_\theta(y, b)
+   =
+   (y - p) X.
+\end{equation}
+The second are
+\begin{equation} \label{eq:grad-sigma}
+   \frac{\partial}{\partial \sigma_k} \log f_\theta(y, b)
+   =
+   \sum_{j = 1}^{\lvert y \rvert} (y_j - p_j)
+   \sum_{\substack{m = 1 \\ i_m = k}}^{\lvert b \rvert} z_{j m} b_m.
+\end{equation}
+For parallelism, we might as well rewrite \eqref{eq:grad-beta-vec} to look
+more like \eqref{eq:grad-sigma}.
+\begin{equation} \label{eq:grad-beta}
+   \frac{\partial}{\partial \beta_k} \log f_\theta(y, b)
+   =
+   \sum_{j = 1}^{\lvert y \rvert} (y_j - p_j) x_{j k}.
+\end{equation}
+\end{subequations}
+
+\subsubsection{Hessian}
+
+The hessian is fairly simple.  First, note that
+$$
+   \frac{\partial p_j}{\partial \eta_j} = p_j (1 - p_j).
+$$
+So
+\begin{subequations}
+\begin{align}
+   \label{eq:hess-beta-beta}
+   \frac{\partial^2}{\partial \beta_k \partial \beta_l} \log f_\theta(y, b)
+   & =
+   - \sum_{j = 1}^{\lvert y \rvert} p_j (1 - p_j) x_{j k} x_{j l}
+   \\
+   \label{eq:hess-sigma-sigma}
+   \frac{\partial^2}{\partial \sigma_k \partial \sigma_l} \log f_\theta(y, b)
+   & =
+   - \sum_{j = 1}^{\lvert y \rvert} p_j (1 - p_j)
+   \sum_{\substack{m = 1 \\ i_m = k}}^{\lvert b \rvert} z_{j m} b_m
+   \sum_{\substack{n = 1 \\ i_n = l}}^{\lvert b \rvert} z_{j n} b_n
+   \\
+   \label{eq:hess-beta-sigma}
+   \frac{\partial^2}{\partial \beta_k \partial \sigma_l} \log f_\theta(y, b)
+   & =
+   - \sum_{j = 1}^{\lvert y \rvert} p_j (1 - p_j)
+   x_{j k} 
+   \sum_{\substack{n = 1 \\ i_n = l}}^{\lvert b \rvert} z_{j n} b_n
+\end{align}
+\end{subequations}
+
+\end{document}
+
+
