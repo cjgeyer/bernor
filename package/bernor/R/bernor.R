@@ -12,7 +12,7 @@ bernor <- function(y, beta, b, sigma, x, z, i, deriv = 0) {
     if (! is.matrix(z)) stop("z not matrix")
 
     if (! all(is.element(y, 0:1))) stop("y not in 0, 1")
-    if (! all(sigma >= 0.0)) stop("sigma not nonnegative")
+    ##### if (! all(sigma >= 0.0)) stop("sigma not nonnegative")
     if (! all(is.element(i, seq(along = sigma))))
         stop("! all(is.element(i, seq(along = sigma)))")
     if (length(i) != length(b))

@@ -7,8 +7,8 @@
 *      y : int, zero-or-one-valued, the response
 *      b : double, real-valued (no constraints), the random effects
 *      theta : double, real-valued (no constraints), the fixed effects
-*      sigma : double, nonnegative-valued, the scale parameters for
-*              the random effects, zero kills the associate random effects
+*      sigma : double, scale parameters for the random effects, requirement
+*              nonnegativity removed in version 0.3-4
 *      leny : number of cases
 *      lenran : number of random effects (length of b)
 *      lenfix : number of fixed effects (length of theta)
@@ -98,9 +98,11 @@ bernor(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
         if (! (y[i] == 0 || y[i] == 1))
             error("argument y must be zero-or-one valued");
 
+#ifdef REQUIRE_SIGMA_NONNEGATIVE
     for (i = 0; i < lenvar; i++)
         if (sigma[i] < 0.0)
             error("argument sigma must be nonnegative-valued");
+#endif /* REQUIRE_SIGMA_NONNEGATIVE */
 
     for (i = 0; i < lenran; i++)
         if (iv[i] <= 0 || iv[i] > lenvar)

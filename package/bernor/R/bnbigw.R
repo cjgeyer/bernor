@@ -17,7 +17,7 @@ bnbigw <- function(y, beta, sigma, nmiss, x, z, i, model, nbatch = 100) {
     nran <- length(i)
 
     if (! all(is.element(y, 0:1))) stop("y not in 0, 1")
-    if (! all(sigma >= 0.0)) stop("sigma not nonnegative")
+    ##### if (! all(sigma >= 0.0)) stop("sigma not nonnegative")
     if (! all(is.element(i, seq(along = sigma))))
         stop("! all(is.element(i, seq(along = sigma)))")
 
