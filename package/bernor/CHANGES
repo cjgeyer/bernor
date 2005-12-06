@@ -21,3 +21,10 @@
 
        added directory inst/makedata that shows where the data sets
        came from
+
+ 0.3-4 removed restriction that components of sigma be nonnegative
+
+ 0.3-5 added weigh argument to bnlogl and flu data set and flu.R in tests
+       note: this is rush job.  bnbigw doesn't yet handle weights, so can't
+       do a complete analysis.
+

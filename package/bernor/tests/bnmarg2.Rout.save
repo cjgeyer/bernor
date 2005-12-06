@@ -1,6 +1,7 @@
 
-R : Copyright 2004, The R Foundation for Statistical Computing
-Version 1.9.1  (2004-06-21), ISBN 3-900051-00-3
+R : Copyright 2005, The R Foundation for Statistical Computing
+Version 2.2.0 beta (2005-09-26 r35681)
+ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -8,7 +9,7 @@ Type 'license()' or 'licence()' for distribution details.
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
-'citation()' on how to cite R in publications.
+'citation()' on how to cite R or R packages in publications.
 
 Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for a HTML browser interface to help.
@@ -120,7 +121,7 @@ $weigh
 +      my.gradient[j] <- (out.eps$value - out$value) / epsilon
 +  }
 >  print(my.gradient)
-[1]  3.7548020  2.4139538  0.5343495 -0.7768008 -1.7539691 -0.1650022
+[1]  3.7548020  2.4139538  0.5343495 -0.7768023 -1.7539691 -0.1650022
 > 
 >  set.seed(42)
 >  out <- bnmarg(y[ , 1], beta, sigma, nmiss, x, z, i, moo, deriv = 2)
@@ -141,7 +142,7 @@ $hessian
 [6,]  -1.2771878 -0.9706873  -0.9758644 -0.5854356  1.2481322  0.8192167
 
 >  all.equal(out$gradient, my.gradient, tolerance = tol)
-[1] "Mean relative  difference: 1.503639e-06"
+[1] "Mean relative  difference: 1.352442e-06"
 >  
 >  my.hessian <- matrix(0, nparm, nparm)
 >  for (j in 1:nparm) {
@@ -158,13 +159,13 @@ $hessian
 +      my.hessian[ , j] <- (out.eps$gradient - out$gradient) / epsilon
 +  }
 >  print(my.hessian)
-           [,1]       [,2]        [,3]       [,4]       [,5]       [,6]
-[1,] -20.883372 -8.6094279 -12.0518879 -5.4483262 -0.9744155 -1.2771882
-[2,]  -8.609428 -8.7141968  -5.3780698 -5.5234939 -0.4510993 -0.9706875
-[3,] -12.051887 -5.3780688 -11.9910094 -5.3981145 -0.7959715 -0.9758645
-[4,]  -5.448326 -5.5234940  -5.3981151 -5.5425705 -0.2735235 -0.5854358
-[5,]  -0.974420 -0.4511031  -0.7959758 -0.2735271  1.0320652  1.2481306
-[6,]  -1.277190 -0.9706896  -0.9758669 -0.5854376  1.2481294  0.8192163
+            [,1]       [,2]        [,3]       [,4]       [,5]       [,6]
+[1,] -20.8833725 -8.6094278 -12.0518883 -5.4483265 -0.9744153 -1.2771882
+[2,]  -8.6094283 -8.7141967  -5.3780701 -5.5234942 -0.4510992 -0.9706874
+[3,] -12.0518875 -5.3780688 -11.9910100 -5.3981153 -0.7959715 -0.9758645
+[4,]  -5.4483261 -5.5234940  -5.3981155 -5.5425710 -0.2735235 -0.5854358
+[5,]  -0.9744201 -0.4511032  -0.7959752 -0.2735254  1.0320651  1.2481308
+[6,]  -1.2771901 -0.9706896  -0.9758661 -0.5854361  1.2481294  0.8192162
 > 
 >  all.equal(out$hessian, my.hessian, tolerance = tol)
 [1] TRUE

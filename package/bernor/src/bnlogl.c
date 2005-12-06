@@ -15,6 +15,7 @@
 *  new input arguments
 *
 *      ncoly : number of columns of y (see above)
+*      weigh : weights for columns of y
 *
 *  new output arguments
 *
@@ -34,6 +35,7 @@ bnlogl(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
     int *nmissin, int *ncolyin,
     int *y, double *theta, double *sigma,
     double *x, double *z, int *iv,
+    double *weigh,
     double *result, double *grad, double *hess, int *derivin,
     int *modelin, int *hyper, double *parm, double *bigv)
 {
@@ -52,6 +54,8 @@ bnlogl(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
     int nparmsq = nparm * nparm;
 
     int i, j, k;
+
+    double sumweigh;
 
     double *mygrad = (double *) R_alloc(nparm, sizeof(double));
     double *myhess = (double *) R_alloc(nparmsq, sizeof(double));
@@ -73,6 +77,14 @@ bnlogl(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
     /* NEW! deriv == 3 means output "big V" */
     if (deriv < 0 || deriv > 3)
         error("argument deriv must be 0, 1, 2, or 3");
+
+    /* check weigh */
+    sumweigh = 0.0;
+    for (i = 0; i < ncoly; ++i) {
+        if (weigh[i] <= 0.0)
+            error("non-positive weight");
+        sumweigh += weigh[i];
+    }
 
     result[0] = 0.0;
     if (deriv >= 1)
@@ -98,6 +110,7 @@ bnlogl(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
         double foo;
         int myderiv = deriv <= 2 ? deriv : 2;
         int myfalse = FALSE;
+        double w = weigh[i];
 
         /* reinitialize .Random.seed */
         defineVar(R_SeedsSymbol, seeds, R_GlobalEnv);
@@ -114,18 +127,18 @@ bnlogl(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
             x, z, iv,
             &foo, mygrad, myhess, &myderiv,
             &model, hyper, parm, NULL, &myfalse);
-        result[0] += foo;
+        result[0] += w * foo;
         if (deriv >= 1)
             for (j = 0; j < nparm; j++)
-                grad[j] += mygrad[j];
+                grad[j] += w * mygrad[j];
         if (deriv >= 2) {
             int j1, j2;
             for (j1 = 0, j = 0; j1 < nparm; j1++)
                 for (j2 = 0; j2 < nparm; j2++, j++) {
                     double foo = mygrad[j1] * mygrad[j2];
-                    hess[j] += (myhess[j] - foo);
+                    hess[j] += w * (myhess[j] - foo);
                     if (deriv >= 3)
-                        bigv[j] += foo;
+                        bigv[j] += w * foo;
                 }
         }
         PutRNGstate();
@@ -133,7 +146,7 @@ bnlogl(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
 
     if (deriv >= 3)
     for (k = 0; k < nparmsq; k++)
-        bigv[k] /= ncoly;
+        bigv[k] /= sumweigh;
 
     UNPROTECT(1);
 }

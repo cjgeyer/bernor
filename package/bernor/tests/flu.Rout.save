@@ -1,0 +1,94 @@
+
+R : Copyright 2005, The R Foundation for Statistical Computing
+Version 2.2.0 beta (2005-09-26 r35681)
+ISBN 3-900051-07-0
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+>  library(bernor)
+>  data(flu)
+> 
+>  ##### first do the old way with no weights #####
+> 
+>  beta <- c(-2.064, -2.231, -2.420, -2.341)
+>  delta <- c(-0.561, 1.181, -0.613)
+> 
+>  i <- rep(1:nrow(flu), times = flu$nobs)
+>  y <- rbind(flu$y1[i], flu$y2[i], flu$y3[i], flu$y4[i])
+>  rm(i)
+> 
+>  x <- diag(4)
+>  z <- rbind(c(1, 1, 1, 0, 0, 0), c(1, 1, 0, 1, 0,
++      0), c(1, 1, 0, 0, 1, 0), c(1, -1, 0, 0, 0, 1))
+>  idx <- c(1, 2, 3, 3, 3, 3)
+> 
+>  set.seed(42)
+>  .save.Random.seed <- .Random.seed
+>  moo <- model("gaussian", length(idx), 1)
+>  nmiss <- 1000
+> 
+>  .Random.seed <- .save.Random.seed
+>  out <- bnlogl(y, beta, delta, nmiss, x, z, idx, moo, deriv = 3)
+>  lapply(out, round, digits = 3)
+$value
+[1] -448.712
+
+$gradient
+[1] -0.110 -0.123 -0.138 -0.132  0.049  0.114  0.141
+
+$hessian
+        [,1]    [,2]    [,3]    [,4]    [,5]    [,6]   [,7]
+[1,] -24.173   3.574   3.401  -1.461   5.014  -8.082  5.840
+[2,]   3.574 -22.722   3.124  -1.179   5.763  -8.497  3.994
+[3,]   3.401   3.124 -21.032  -1.211   4.692  -8.565  5.744
+[4,]  -1.461  -1.179  -1.211 -20.665   7.000 -12.973  7.825
+[5,]   5.014   5.763   4.692   7.000 -18.602  10.642 -5.700
+[6,]  -8.082  -8.497  -8.565 -12.973  10.642 -43.972  7.408
+[7,]   5.840   3.994   5.744   7.825  -5.700   7.408 -8.340
+
+$bigv
+       [,1]   [,2]   [,3]   [,4]   [,5]   [,6]   [,7]
+[1,]  0.089 -0.007 -0.014  0.002 -0.015  0.036 -0.021
+[2,] -0.007  0.086 -0.017  0.006 -0.023  0.030 -0.016
+[3,] -0.014 -0.017  0.083  0.007 -0.015  0.025 -0.025
+[4,]  0.002  0.006  0.007  0.078 -0.026  0.048 -0.030
+[5,] -0.015 -0.023 -0.015 -0.026  0.062 -0.031  0.023
+[6,]  0.036  0.030  0.025  0.048 -0.031  0.153 -0.030
+[7,] -0.021 -0.016 -0.025 -0.030  0.023 -0.030  0.033
+
+> 
+>  ##### now the new way #####
+> 
+>  y <- rbind(flu$y1, flu$y2, flu$y3, flu$y4)
+>  weigh <- flu$nobs
+>  y <- y[ , weigh > 0]
+>  weigh <- weigh[weigh > 0]
+> 
+>  # print(y)
+>  # print(weigh)
+> 
+>  .Random.seed <- .save.Random.seed
+>  nout <- bnlogl(y, beta, delta, nmiss, x, z, idx, moo, deriv = 3,
++      weigh = weigh)
+> 
+>  all.equal(out$value, nout$value)
+[1] TRUE
+>  all.equal(out$gradient, nout$gradient)
+[1] TRUE
+>  all.equal(out$hessian, nout$hessian)
+[1] TRUE
+>  all.equal(out$bigv, nout$bigv)
+[1] TRUE
+> 
+> 

@@ -1,0 +1,193 @@
+
+\documentclass{article}
+
+\usepackage{indentfirst}
+\usepackage{amsmath}
+\DeclareMathOperator{\logit}{logit}
+\DeclareMathOperator{\var}{var}
+
+\usepackage{xr}
+\externaldocument[mcla:]{mcla}
+
+\begin{document}
+
+\title{Adding Weights to the Bernor Package}
+
+\author{Yun Ju Sung \and Charles J. Geyer}
+
+\date{September 30, 2005}
+
+\maketitle
+
+This document details a trivial modification of the \verb@bernor@ package
+and is itself a trivial modification of the first part of the
+document ``Monte Carlo Likelihood Approximation'' supplied in the \verb@doc@
+directory of that package.
+
+\section{Monte Carlo Likelihood Approximation}
+
+[Quote from ``Monte Carlo Likelihood Approximation'']
+Let $f_\theta(x, y)$ be the complete data density for a missing data model,
+the missing data being $x$ and the observed data being $y$.
+Suppose we have observed data $y_1$, $\ldots$, $y_n$ which are
+independent and identically distributed (IID) and
+simulations $x_1$, $\ldots$, $x_m$ which are IID from a known importance
+sampling distribution with density $h$.
+
+The (observed data) log likelihood for this model is
+\begin{equation} \label{eq:logl}
+   l_n(\theta) = \sum_{j = 1}^n \log f_\theta(y_j)
+\end{equation}
+where
+$$
+   f_\theta(y) = \int f_\theta(x, y) \, d x
+$$
+is the marginal for $y$.
+[End of Quote]
+
+We modify this to allow for the possibility that $y$ values are repeated
+many times.  Suppose the value $y_j$ is repeated $w_j$ times.  Then, purely
+for reasons of computational efficiency, we can rewrite \eqref{eq:logl}
+as
+\begin{equation} \label{eq:logl-weigh}
+   l_n(\theta) = \sum_{j = 1}^n w_j \log f_\theta(y_j).
+\end{equation}
+Note that the sample size is now $w_1 + \ldots + w_n$ (not $n$ as before).
+
+[Quote from ``Monte Carlo Likelihood Approximation'']
+The Monte Carlo likelihood approximation for \eqref{eq:logl} is
+\begin{subequations}
+\begin{equation} \label{eq:mclogl}
+   l_{m, n}(\theta)
+   =
+   \sum_{j = 1}^n \log f_{m, \theta}(y_j)
+\end{equation}
+where
+\begin{equation} \label{eq:mcmarg}
+   f_{\theta, m}(y)
+   =
+   \frac{1}{m} \sum_{i = 1}^m \frac{f_\theta(x_i, y)}{h(x_i)}.
+\end{equation}
+\end{subequations}
+The maximizer $\hat{\theta}_{m, n}$ of \eqref{eq:mclogl} is the Monte Carlo
+(approximation to the) MLE (the MCMLE).
+[End of Quote]
+
+Of course, corresponding to our rewrite of \eqref{eq:logl}
+as \eqref{eq:logl-weigh}, we now must rewrite \eqref{eq:mclogl} as
+\begin{subequations}
+\begin{equation} \label{eq:mclogl-weigh}
+   l_{m, n}(\theta)
+   =
+   \sum_{j = 1}^n w_j \log f_{m, \theta}(y_j)
+\end{equation}
+where \eqref{eq:mcmarg} remains the same (because it does not involve
+a sum over $y_j$).
+\end{subequations}
+
+Derivatives of \eqref{eq:mclogl-weigh} are, of course,
+$$
+   \nabla^k l_{m, n}(\theta)
+   =
+   \sum_{j = 1}^n w_j \nabla^k \log f_{m, \theta}(y_j)
+$$
+where $\nabla$ denotes differentiation with respect to $\theta$,
+and derivatives of \eqref{eq:mcmarg} remain as they were given in
+``Monte Carlo Likelihood Approximation'' since \eqref{eq:mcmarg}
+itself has not changed.
+
+\section{Asymptotic Variance}
+
+The asymptotic variance of $\hat{\theta}_{m, n}$, including
+both the sampling variation in $y_1$, $\ldots$, $y_n$
+and the Monte Carlo variation in $x_1$, $\ldots$, $x_m$ is
+\begin{equation} \label{eq:asymp-var}
+   J(\theta)^{-1}
+   \left( \frac{V(\theta)}{n} + \frac{W(\theta)}{m} \right)
+   J(\theta)^{-1}
+\end{equation}
+where
+\begin{subequations}
+\begin{align}
+   V(\theta) & = \var\{ \nabla \log f_\theta(Y) \}
+   \label{eq:v-theo}
+   \\
+   J(\theta) & = E\{ - \nabla^2 \log f_\theta(Y) \}
+   \label{eq:j-theo}
+   \\
+   W(\theta)
+   & =
+   \var\left\{
+      E\biggl[ \frac{\nabla f_\theta(X \mid Y)}{h(X)} \biggm| X \biggr]
+   \right\}
+   \label{eq:w-theo}
+\end{align}
+\end{subequations}
+where $X$ and $Y$ here have the same distribution as $x_i$ and $y_j$,
+respectively.
+This is the content of Theorem~3.3.1 in the first author's thesis.
+%%% NOTE: need to change to equation numbers in paper.
+
+The first two of these quantities have obvious ``plug-in'' estimators
+\begin{subequations}
+\begin{align}
+   \widehat{V}_{m, n}(\theta)
+   & =
+   \frac{1}{w_1 + \cdots + w_n} \sum_{j = 1}^n
+   w_j
+   \bigl(\nabla \log f_{\theta, m}(y_j)\bigr)
+   \bigl(\nabla \log f_{\theta, m}(y_j)\bigr)^T
+   \label{eq:v-plug}
+   \\
+   \widehat{J}_{m, n}(\theta)
+   & =
+   -
+   \frac{1}{w_1 + \cdots + w_n} \sum_{j = 1}^n
+   w_j
+   \nabla^2 \log f_{\theta, m}(y_j)
+   \label{eq:j-plug}
+\end{align}
+
+The quantity \eqref{eq:w-theo} has a natural plug-in estimator
+\begin{equation} \label{eq:w}
+   \widehat{W}_{m, n}(\theta)
+   =
+   \frac{1}{m} \sum_{i = 1}^m
+   \widehat{S}_{m, n}(\theta, x_i)
+   \widehat{S}_{m, n}(\theta, x_i)^T
+\end{equation}
+where
+\begin{multline} \label{eq:s}
+   \widehat{S}_{m, n}(\theta, x)
+   \\
+   =
+   \frac{1}{w_1 + \cdots + w_n} \sum_{j = 1}^n
+   w_j
+   \bigl(
+   \nabla \log f_{\theta}(x, y_j)
+   -
+   \nabla \log f_{\theta, m}(y_j)
+   \bigr)
+   \cdot
+   \frac{f_{\theta}(x, y_j)}
+   {f_{\theta, m}(y_j) h(x)}
+\end{multline}
+\end{subequations}
+See equations (2.7) and (2.9) in the first author's thesis.
+%%% NOTE: need to change to equation numbers in paper.
+
+\section{Method of Batch Means}
+
+The ``Monte Carlo Likelihood Approximation'' document goes on about
+a ``method of batch means'' estimator of \eqref{eq:w-theo}
+In the present context this is almost unchanged.
+Equations \eqref{mcla:eq:s-bm} and \eqref{mcla:eq:w-bm} in that document
+remain the same.  The only difference is that equation \eqref{mcla:eq:s}
+in that document is replaced by equation \eqref{eq:s} above.
+
+
+
+\end{document}
+
+\begin{center} \LARGE REVISED DOWN TO HERE \end{center}
+

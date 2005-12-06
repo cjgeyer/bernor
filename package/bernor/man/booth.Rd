@@ -34,7 +34,7 @@
   \code{\link{bnlogl}}, \code{\link{bnbigw}}.
 }
 \references{
-  Booth, J.~G. and Hobert, J.~P. (1999).
+  Booth, J. G. and Hobert, J. P. (1999).
   Maximizing generalized linear mixed model likelihoods with
     an automated Monte Carlo EM algorithm.
   \emph{Journal of the Royal Statistical Society

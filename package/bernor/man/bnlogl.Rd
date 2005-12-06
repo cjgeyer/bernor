@@ -6,12 +6,12 @@
   Bernoulli regression model with normal random effects.
 }
 \usage{
-bnlogl(y, beta, sigma, nmiss, x, z, i, model, deriv = 0)
+bnlogl(y, beta, sigma, nmiss, x, z, i, model, deriv = 0, weigh)
 }
 \arguments{
   \item{y}{a zero-one-valued (Bernoulli) matrix, the response.}
   \item{beta}{the fixed effect vector.}
-  \item{sigma}{the scale parameter vector for the fixed effects.}
+  \item{sigma}{the scale parameter vector for the random effects.}
   \item{nmiss}{integer, the number of simulations of the missing data.}
   \item{x}{the model matrix for fixed effects.}
   \item{z}{the model matrix for random effects.}
@@ -21,6 +21,9 @@ bnlogl(y, beta, sigma, nmiss, x, z, i, model, deriv = 0)
   \item{deriv}{the number of derivatives wanted.  No more than 3.  Zero,
      the default, means no derivatives.  Three is a kludge.  It doesn't
      mean third derivatives but to output ``big V hat''.}
+  \item{weigh}{weights.  Positive integer valued vector of
+     length \code{ncol(y)}.  May be missing in which case all weights one
+     is assumed.}
 }
 \details{
   evaluates by good old-fashioned (IID) Monte Carlo observed data
@@ -31,9 +34,9 @@ bnlogl(y, beta, sigma, nmiss, x, z, i, model, deriv = 0)
     save.Random.seed <- .Random.seed
     for (j in 1:nmiss) {
         .Random.seed <<- save.Random.seed
-        logf[j] <- bnmarg(y[ , i], beta, b, sigma, x, z, i)$value
+        logf[j] <- bnmarg(y[ , j], beta, b, sigma, x, z, i)$value
     }
-    sum(logf)
+    sum(weigh * logf)
   }
 }
 \value{
