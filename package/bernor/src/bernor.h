@@ -37,6 +37,7 @@ bnbigw(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
     int *nmissin, int *ncolyin,
     int *y, double *theta, double *sigma,
     double *x, double *z, int *iv,
+    double *weigh,
     double *result,
     int *modelin, int *hyper, double *parm,
     int *nbatchin);

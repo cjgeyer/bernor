@@ -25,7 +25,7 @@ Type 'q()' to quit R.
 >  delta <- c(-0.561, 1.181, -0.613)
 > 
 >  i <- rep(1:nrow(flu), times = flu$nobs)
->  y <- rbind(flu$y1[i], flu$y2[i], flu$y3[i], flu$y4[i])
+>  yold <- rbind(flu$y1[i], flu$y2[i], flu$y3[i], flu$y4[i])
 >  rm(i)
 > 
 >  x <- diag(4)
@@ -39,7 +39,7 @@ Type 'q()' to quit R.
 >  nmiss <- 1000
 > 
 >  .Random.seed <- .save.Random.seed
->  out <- bnlogl(y, beta, delta, nmiss, x, z, idx, moo, deriv = 3)
+>  out <- bnlogl(yold, beta, delta, nmiss, x, z, idx, moo, deriv = 3)
 >  lapply(out, round, digits = 3)
 $value
 [1] -448.712
@@ -89,6 +89,28 @@ $bigv
 >  all.equal(out$hessian, nout$hessian)
 [1] TRUE
 >  all.equal(out$bigv, nout$bigv)
+[1] TRUE
+> 
+>  ##### big W the old way #####
+> 
+>  .Random.seed <- .save.Random.seed
+>  out <- bnbigw(yold, beta, delta, nmiss = 100, x, z, idx, moo, nbatch = 10)
+>  round(out, digits = 3)
+       [,1]   [,2]   [,3]   [,4]   [,5]   [,6]   [,7]
+[1,]  0.010  0.005  0.007 -0.002 -0.011  0.010 -0.001
+[2,]  0.005  0.006  0.003 -0.001 -0.008  0.007 -0.002
+[3,]  0.007  0.003  0.013 -0.003 -0.008  0.009 -0.005
+[4,] -0.002 -0.001 -0.003  0.005  0.003  0.000 -0.001
+[5,] -0.011 -0.008 -0.008  0.003  0.017 -0.014  0.001
+[6,]  0.010  0.007  0.009  0.000 -0.014  0.018 -0.001
+[7,] -0.001 -0.002 -0.005 -0.001  0.001 -0.001  0.006
+> 
+>  ##### big W the new way #####
+> 
+>  .Random.seed <- .save.Random.seed
+>  wout <- bnbigw(y, beta, delta, nmiss = 100, x, z, idx, moo, nbatch = 10,
++      weigh = weigh)
+>  all.equal(out, wout)
 [1] TRUE
 > 
 > 

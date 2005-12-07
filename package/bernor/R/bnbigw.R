@@ -1,5 +1,5 @@
 
-bnbigw <- function(y, beta, sigma, nmiss, x, z, i, model, nbatch = 100) {
+bnbigw <- function(y, beta, sigma, nmiss, x, z, i, model, nbatch = 100, weigh) {
 
     if (! is.numeric(y)) stop("y not numeric")
     if (! is.numeric(beta)) stop("beta not numeric")
@@ -49,6 +49,15 @@ bnbigw <- function(y, beta, sigma, nmiss, x, z, i, model, nbatch = 100) {
     storage.mode(x) <- "double"
     storage.mode(z) <- "double"
 
+    if (missing(weigh)) {
+        weigh <- rep(1, ncol(y))
+    } else {
+        if (! is.numeric(weigh)) stop("weigh not numeric")
+        if (length(weigh) != ncol(y)) stop("weigh wrong length")
+        if (! all(as.integer(weigh) == weigh)) stop("weigh not integer")
+        if (! all(weigh > 0)) stop("weigh not positive")
+    }
+
     imodel <- match(model$name, models()) - 1
     out <- .C("i1miss",
         model = as.integer(imodel),
@@ -88,6 +97,7 @@ bnbigw <- function(y, beta, sigma, nmiss, x, z, i, model, nbatch = 100) {
         x = x,
         z = z,
         i = as.integer(i),
+        weigh = as.double(weigh),
         result = matrix(as.double(0), nparm, nparm),
         model = as.integer(imodel),
         hyper = as.integer(model$hyper),

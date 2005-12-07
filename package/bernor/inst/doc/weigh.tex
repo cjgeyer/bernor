@@ -185,6 +185,50 @@ Equations \eqref{mcla:eq:s-bm} and \eqref{mcla:eq:w-bm} in that document
 remain the same.  The only difference is that equation \eqref{mcla:eq:s}
 in that document is replaced by equation \eqref{eq:s} above.
 
+Putting these together we obtain
+\begin{align*}
+   \widetilde{S}_{m, n, k}(\theta)
+   & =
+   \frac{1}{l}
+   \sum_{i = (k - 1) l + 1}^{k l}
+   \widehat{S}_{m, n}(\theta, x_i)
+   \\
+   & =
+   \frac{1}{l}
+   \sum_{i = (k - 1) l + 1}^{k l}
+   \frac{1}{w_1 + \cdots + w_n} \sum_{j = 1}^n
+   w_j
+   \\
+   & \qquad \times
+   \bigl(
+   \nabla \log f_{\theta}(x_i, y_j)
+   -
+   \nabla \log f_{\theta, m}(y_j)
+   \bigr)
+   \cdot
+   \frac{f_{\theta}(x_i, y_j)}
+   {f_{\theta, m}(y_j) h(x_i)}
+   \\
+\intertext{which the code, for efficiency reasons, reverses the order of
+summation}
+   \\
+   & =
+   \frac{1}{l (w_1 + \cdots + w_n)} \sum_{j = 1}^n
+   \sum_{i = (k - 1) l + 1}^{k l}
+   \\
+   & \qquad \times
+   w_j
+   \bigl(
+   \nabla \log f_{\theta}(x_i, y_j)
+   -
+   \nabla \log f_{\theta, m}(y_j)
+   \bigr)
+   \cdot
+   \frac{f_{\theta}(x_i, y_j)}
+   {f_{\theta, m}(y_j) h(x_i)}
+\end{align*}
+
+
 
 
 \end{document}

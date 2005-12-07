@@ -28,3 +28,5 @@
        note: this is rush job.  bnbigw doesn't yet handle weights, so can't
        do a complete analysis.
 
+ 0.3-6 bnbigw now also handles weights.
+

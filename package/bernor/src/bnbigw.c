@@ -7,6 +7,7 @@
 *  new input argument
 *
 *      nbatch : integer, scalar, number of batch means
+*      weigh  : weights for columns of y
 *
 *  output arguments, just one, result, which (unlike other functions in
 *      this package) is an nparm * nparm matrix (like output argument hess
@@ -48,6 +49,7 @@ bnbigw(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
     int *nmissin, int *ncolyin,
     int *y, double *theta, double *sigma,
     double *x, double *z, int *iv,
+    double *weigh,
     double *result,
     int *modelin, int *hyper, double *parm,
     int *nbatchin)
@@ -69,6 +71,8 @@ bnbigw(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
 
     int i, j, k, ibatch, jtoo;
     int j1, j2;
+
+    double sumweigh;
 
     double *mygrad = (double *) R_alloc(nparm, sizeof(double));
     double *myhess = (double *) R_alloc(nparmsq, sizeof(double));
@@ -101,6 +105,14 @@ bnbigw(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
         error("nmiss not multiple of nbatch");
     if (blen <= 0)
         error("nmiss less than nbatch");
+
+    /* check weigh */
+    sumweigh = 0.0;
+    for (i = 0; i < ncoly; ++i) {
+        if (weigh[i] <= 0.0)
+            error("non-positive weight");
+        sumweigh += weigh[i];
+    }
 
     /* zero result */
     for (i = 0; i < nparmsq; i++)
@@ -161,6 +173,7 @@ bnbigw(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
             int one = 1;
             int myfalse = FALSE;
             double foo;
+            double w = weigh[j];
 
             bnmarg(&leny, &lenfix, &lenran, &lenvar,
                 &ncolx, &ncolz,
@@ -190,16 +203,16 @@ bnbigw(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
                 /* add contribution to shat */
 
                 dmiss(b, &model, hyper, parm, &baz);
-                double weigh = exp(bar - foo - baz);
+                double exweigh = exp(bar - foo - baz);
                 for (k = 0; k < nparm; k++)
-                    shat[k] += (mygrad[k] - qux[k]) * weigh;
+                    shat[k] += (mygrad[k] - qux[k]) * exweigh * w;
             }
         }
 
         UNPROTECT(1);
 
-        /* divide shat by blen * ncoly */
-        double foomp = ((double) blen) * ((double) ncoly);
+        /* divide shat by blen * sumweigh */
+        double foomp = blen * sumweigh;
         for (k = 0; k < nparm; k++)
             shat[k] /= foomp;
 

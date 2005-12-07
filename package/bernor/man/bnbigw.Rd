@@ -6,7 +6,7 @@
   Bernoulli regression model with normal random effects.
 }
 \usage{
-bnbigw(y, beta, sigma, nmiss, x, z, i, model, nbatch = 100)
+bnbigw(y, beta, sigma, nmiss, x, z, i, model, nbatch = 100, weigh)
 }
 \arguments{
   \item{y}{a zero-one-valued (Bernoulli) matrix, the response.}
@@ -19,6 +19,9 @@ bnbigw(y, beta, sigma, nmiss, x, z, i, model, nbatch = 100)
   \item{model}{the model for the importance sampling distribution,
     an object of class model produced by the \code{\link{model}} function.}
   \item{nbatch}{the number of batch means.}
+  \item{weigh}{weights.  Positive integer valued vector of
+     length \code{ncol(y)}.  May be missing in which case all weights one
+     is assumed.}
 }
 \details{
   \code{.Random.seed} must be the same as before the \code{bnlogl}

@@ -8,7 +8,7 @@
  delta <- c(-0.561, 1.181, -0.613)
 
  i <- rep(1:nrow(flu), times = flu$nobs)
- y <- rbind(flu$y1[i], flu$y2[i], flu$y3[i], flu$y4[i])
+ yold <- rbind(flu$y1[i], flu$y2[i], flu$y3[i], flu$y4[i])
  rm(i)
 
  x <- diag(4)
@@ -22,7 +22,7 @@
  nmiss <- 1000
 
  .Random.seed <- .save.Random.seed
- out <- bnlogl(y, beta, delta, nmiss, x, z, idx, moo, deriv = 3)
+ out <- bnlogl(yold, beta, delta, nmiss, x, z, idx, moo, deriv = 3)
  lapply(out, round, digits = 3)
 
  ##### now the new way #####
@@ -43,4 +43,17 @@
  all.equal(out$gradient, nout$gradient)
  all.equal(out$hessian, nout$hessian)
  all.equal(out$bigv, nout$bigv)
+
+ ##### big W the old way #####
+
+ .Random.seed <- .save.Random.seed
+ out <- bnbigw(yold, beta, delta, nmiss = 100, x, z, idx, moo, nbatch = 10)
+ round(out, digits = 3)
+
+ ##### big W the new way #####
+
+ .Random.seed <- .save.Random.seed
+ wout <- bnbigw(y, beta, delta, nmiss = 100, x, z, idx, moo, nbatch = 10,
+     weigh = weigh)
+ all.equal(out, wout)
 
