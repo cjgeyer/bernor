@@ -8,7 +8,7 @@
 }
 \usage{data(booth)}
 \format{
-  A list containing seven components:
+  A list containing components:
   \tabular{ll}{
     \code{y} \tab response matrix \cr
     \code{x} \tab fixed effect model matrix \cr
@@ -26,6 +26,11 @@
         \dQuote{simulation truth} parameter vector \cr
     \code{bigw0} \tab the expected \dQuote{big W} matrix for sample
         size one at the \dQuote{simulation truth} parameter vector
+    \code{info.hat.exact} \tab the expected Fisher information matrix for
+        sample size one (one column of \code{y}) at the
+        \code{theta.hat.exact} parameter vector \cr
+    \code{bigw.hat.exact} \tab the expected \dQuote{big W} matrix for sample
+        size one at the \code{theta.hat.exact} parameter vector
   }
   The structure of these objects is described in the documentation
   for \code{\link{bnlogl}} and \code{\link{bnbigw}}.

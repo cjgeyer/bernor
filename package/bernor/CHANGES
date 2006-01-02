@@ -30,3 +30,5 @@
 
  0.3-6 bnbigw now also handles weights.
 
+ 0.3-7 added bigw.hat.exact and info.hat.exact to booth dataset
+
