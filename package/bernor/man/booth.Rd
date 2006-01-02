@@ -25,7 +25,7 @@
         size one (one column of \code{y}) at the
         \dQuote{simulation truth} parameter vector \cr
     \code{bigw0} \tab the expected \dQuote{big W} matrix for sample
-        size one at the \dQuote{simulation truth} parameter vector
+        size one at the \dQuote{simulation truth} parameter vector \cr
     \code{info.hat.exact} \tab the expected Fisher information matrix for
         sample size one (one column of \code{y}) at the
         \code{theta.hat.exact} parameter vector \cr
