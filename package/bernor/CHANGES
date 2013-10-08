@@ -32,3 +32,5 @@
 
  0.3-7 added bigw.hat.exact and info.hat.exact to booth dataset
 
+ 0.3-8 add NAMESPACE pass R CMD check under R-3.0.x
+

@@ -1,0 +1,3 @@
+\rm -f bernor/src/*.{o,so}
+R CMD check bernor
+R CMD INSTALL -l ../library bernor

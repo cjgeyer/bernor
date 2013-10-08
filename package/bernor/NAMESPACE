@@ -1,0 +1,12 @@
+
+useDynLib(bernor)
+
+export(bernor)
+export(bnbigw)
+export(bnlogl)
+export(bnmarg)
+export(dmiss)
+export(model)
+export(models)
+export(rmiss)
+

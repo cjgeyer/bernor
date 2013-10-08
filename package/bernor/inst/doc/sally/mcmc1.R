@@ -1,5 +1,5 @@
 
- library(bernor, lib.loc = "../library")
+ library(bernor)
  library(mcmc)
 
  data(salam)
