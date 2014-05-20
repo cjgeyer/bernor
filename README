@@ -1,0 +1,18 @@
+
+R package to do logit-normal generalized linear mixed models.
+
+Method: ordinary Monte Carlo with importance sampling.
+
+The main point of the package was to provide the computing backing the paper
+
+    Sung, Y.~J. and Geyer, C.~J. (2007).
+    Monte Carlo Likelihood Inference for Missing Data Models.
+    Annals of Statistics, 35, 990-1011.
+
+The package works fine (although is a bit complicated to use) and does
+random effects models of arbitrary complexity.  However, its importance
+sampling scheme is not ideal and it does not give very good answers for
+very complicated models.  Hence we have not put the package on CRAN.
+
+Should install with no problem.  Passed R CMD check under R-3.1.0.
+
