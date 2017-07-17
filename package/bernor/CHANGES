@@ -37,3 +37,5 @@
  0.3-9 change LICENSE file and add vignettes directory to pass R CMD check
            under R-3.1.x
 
+ 0.3-10 delete styles from native routine registration
+
