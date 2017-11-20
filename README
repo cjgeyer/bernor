@@ -14,5 +14,5 @@ random effects models of arbitrary complexity.  However, its importance
 sampling scheme is not ideal and it does not give very good answers for
 very complicated models.  Hence we have not put the package on CRAN.
 
-Should install with no problem.  Passed R CMD check under R-3.1.0.
+Should install with no problem.  Passed R CMD check under R-3.4.2.
 

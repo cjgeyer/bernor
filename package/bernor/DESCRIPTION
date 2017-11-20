@@ -1,6 +1,6 @@
 Package: bernor
-Version: 0.3-10
-Date: 17 July 2017
+Version: 0.3-11
+Date: 2017-11-20
 Title: Bernoulli Regression with Normal Random Effects
 Author: Charles J. Geyer <charlie@stat.umn.edu> and
     Yun Ju Sung <yunju@wubios.wustl.edu>
@@ -10,3 +10,4 @@ Description: Does maximum likelihood for Bernouli generalized linear
     mixed models (GLMM) using ordinary Monte Carlo (OMC) to calculate
     the log likelihood and two derivatives.
 License: MIT + file LICENSE
+URL: https://github.com/cjgeyer/bernor
