@@ -29,7 +29,7 @@ bernor <- function(y, beta, b, sigma, x, z, i, deriv = 0) {
 
     nparm <- length(beta) + length(sigma)
 
-    out <- .C("bernor",
+    out <- .C(C_bernor,
         leny = length(y),
         lenfix = length(beta),
         lenran = length(b),
@@ -46,8 +46,7 @@ bernor <- function(y, beta, b, sigma, x, z, i, deriv = 0) {
         value = double(1),
         grad = double(nparm),
         hess = matrix(as.double(0), nparm, nparm),
-        deriv = as.integer(deriv),
-        PACKAGE = "bernor")
+        deriv = as.integer(deriv))
     result <- list(value = out$value)
     if (deriv >= 1) result$gradient <- out$grad
     if (deriv == 2) result$hessian <- out$hess

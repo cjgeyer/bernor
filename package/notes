@@ -1,3 +1,2 @@
-\rm -f bernor/src/*.{o,so}
-R CMD check bernor
-R CMD INSTALL -l ../library bernor
+R CMD build bernor
+R CMD check bernor_*.tar.gz

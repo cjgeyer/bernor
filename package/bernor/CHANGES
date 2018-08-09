@@ -40,3 +40,8 @@
  0.3-10 delete styles from native routine registration
 
  0.3-11 add GitHub URL to DESCRIPTION file
+
+ 0.3-12 fix native routine registration to be the way CRAN likes
+        was broken, don't know how it checked before
+        R core team must have tightened native routine registration checks
+        pass R CMD check under R-3.5.1

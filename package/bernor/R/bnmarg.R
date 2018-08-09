@@ -37,19 +37,17 @@ bnmarg <- function(y, beta, sigma, nmiss, x, z, i, model, deriv = 0,
     storage.mode(z) <- "double"
 
     imodel <- match(model$name, models()) - 1
-    out <- .C("i1miss",
+    out <- .C(C_i1miss,
         model = as.integer(imodel),
-        nhyper = integer(1),
-        PACKAGE = "bernor")
+        nhyper = integer(1))
     nhyper <- out$nhyper
 
     if (length(model$hyper) != nhyper) stop("hyper wrong length for model")
-    out <- .C("i2miss",
+    out <- .C(C_i2miss,
         model = as.integer(imodel),
         hyper = as.integer(model$hyper),
         nparm = integer(1),
-        nstate = integer(1),
-        PACKAGE = "bernor")
+        nstate = integer(1))
     nparm <- out$nparm
     nstate <- out$nstate
 
@@ -66,7 +64,7 @@ bnmarg <- function(y, beta, sigma, nmiss, x, z, i, model, deriv = 0,
         wayout <- double(0)
     }
 
-    out <- .C("bnmarg",
+    out <- .C(C_bnmarg,
         leny = length(y),
         lenfix = length(beta),
         lenran = as.integer(nran),
@@ -88,8 +86,7 @@ bnmarg <- function(y, beta, sigma, nmiss, x, z, i, model, deriv = 0,
         hyper = as.integer(model$hyper),
         parm = as.double(model$parm),
         weigh = wayout,
-        want.weights = want.weights,
-        PACKAGE = "bernor")
+        want.weights = want.weights)
     result <- list(value = out$value)
     if (deriv >= 1) result$gradient <- out$grad
     if (deriv == 2) result$hessian <- out$hess - outer(out$grad, out$grad)

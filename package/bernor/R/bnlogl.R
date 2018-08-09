@@ -45,19 +45,17 @@ bnlogl <- function(y, beta, sigma, nmiss, x, z, i, model, deriv = 0, weigh) {
     }
 
     imodel <- match(model$name, models()) - 1
-    out <- .C("i1miss",
+    out <- .C(C_i1miss,
         model = as.integer(imodel),
-        nhyper = integer(1),
-        PACKAGE = "bernor")
+        nhyper = integer(1))
     nhyper <- out$nhyper
 
     if (length(model$hyper) != nhyper) stop("hyper wrong length for model")
-    out <- .C("i2miss",
+    out <- .C(C_i2miss,
         model = as.integer(imodel),
         hyper = as.integer(model$hyper),
         nparm = integer(1),
-        nstate = integer(1),
-        PACKAGE = "bernor")
+        nstate = integer(1))
     nparm <- out$nparm
     nstate <- out$nstate
 
@@ -68,7 +66,7 @@ bnlogl <- function(y, beta, sigma, nmiss, x, z, i, model, deriv = 0, weigh) {
     ### note: the "other" nparm
     nparm <- length(beta) + length(sigma)
 
-    out <- .C("bnlogl",
+    out <- .C(C_bnlogl,
         leny = nrow(y),
         lenfix = length(beta),
         lenran = as.integer(nran),
@@ -91,8 +89,7 @@ bnlogl <- function(y, beta, sigma, nmiss, x, z, i, model, deriv = 0, weigh) {
         model = as.integer(imodel),
         hyper = as.integer(model$hyper),
         parm = as.double(model$parm),
-        bigv = matrix(as.double(0), nparm, nparm),
-        PACKAGE = "bernor")
+        bigv = matrix(as.double(0), nparm, nparm))
     result <- list(value = out$value)
     if (deriv >= 1) result$gradient <- out$grad
     if (deriv >= 2) result$hessian <- out$hess

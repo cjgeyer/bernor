@@ -1,5 +1,5 @@
 
-useDynLib(bernor)
+useDynLib(bernor, .registration = TRUE, .fixes = "C_")
 
 export(bernor)
 export(bnbigw)

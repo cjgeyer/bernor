@@ -71,7 +71,6 @@ bnmarg(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
     int i, j;
 
     double loga;
-    double value;
     double *mygrad = Calloc(nparm, double);
     double *myhess = Calloc(nparmsq, double);
     double *b = Calloc(lenran, double);
@@ -89,7 +88,6 @@ bnmarg(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
 #endif /* MYDEBUG */
 
     /* initialize */
-    value = 0.0;
     if (deriv >= 1)
         for (j = 0; j < nparm; j++)
             grad[j] = 0.0;

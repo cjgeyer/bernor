@@ -66,3 +66,9 @@ i1stud(int *nhyper);
 void
 i2stud(int *hyper, int *nparm, int *nstate);
 
+void
+i1miss(int *modelin, int *nhyper);
+
+void
+i2miss(int *modelin, int *hyper, int *nparm, int *nstate);
+
