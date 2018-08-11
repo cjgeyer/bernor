@@ -20,6 +20,7 @@ by Sections 5.4 and 6.1 of *Writing R Extensions*
 (https://cran.r-project.org/doc/manuals/r-release/R-exts.html).
 
 To install using devtools
+(https://cran.r-project.org/package=devtools)
 
     library(devtools)
     install_github("cjgeyer/bernor", subdir = "package/bernor")
