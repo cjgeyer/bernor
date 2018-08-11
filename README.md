@@ -19,9 +19,9 @@ The latest version uses all of the native routine registration recommended
 by Sections 5.4 and 6.1 of *Writing R Extensions*
 (https://cran.r-project.org/doc/manuals/r-release/R-exts.html).
 
-To install using devtools
-(https://cran.r-project.org/package=devtools)
+To install using R package `remotes`
+(https://cran.r-project.org/package=remotes)
 
-    library(devtools)
+    library(remotes)
     install_github("cjgeyer/bernor", subdir = "package/bernor")
 
