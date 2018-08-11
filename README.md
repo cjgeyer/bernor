@@ -6,7 +6,7 @@ Method: ordinary Monte Carlo with importance sampling.
 The main point of the package was to provide the computing backing the paper
 
 > Sung, Y.~J. and Geyer, C.~J. (2007).\
-> Monte Carlo likelihood inference for missing data models.
+> Monte Carlo likelihood inference for missing data models.\
 > *Annals of Statistics*, **35**, 990--1011.
 
 The package works fine (although is a bit complicated to use) and does
