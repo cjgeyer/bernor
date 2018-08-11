@@ -6,7 +6,7 @@ Author: Charles J. Geyer <charlie@stat.umn.edu> and
     Yun Ju Sung <yunju@wustl.edu>
 Maintainer: Charles J. Geyer <charlie@stat.umn.edu>
 Depends: R (>= 3.0.2)
-Description: Does maximum likelihood for Bernouli generalized linear
+Description: Does maximum likelihood for Bernoulli generalized linear
     mixed models (GLMM) using ordinary Monte Carlo (OMC) to calculate
     the log likelihood and two derivatives.
 License: MIT + file LICENSE
