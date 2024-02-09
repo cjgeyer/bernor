@@ -13,7 +13,9 @@
  nmiss <- 100
  set.seed(42)
  out <- bnlogl(y, beta, sigma, nmiss, x, z, i, moo)
+## IGNORE_RDIFF_BEGIN
  print(out)
+## IGNORE_RDIFF_END
 
  my.bnlogl <- function(y, beta, sigma, nmiss, x, z, iv, model) {
      save.random.seed <- .Random.seed
@@ -28,7 +30,9 @@
 
  set.seed(42)
  my.out <- my.bnlogl(y, beta, sigma, nmiss, x, z, i, moo)
+## IGNORE_RDIFF_BEGIN
  print(my.out)
+## IGNORE_RDIFF_END
  all.equal(out$value, my.out, tolerance = tol)
 
  nparm <- length(beta) + length(sigma)
@@ -47,11 +51,15 @@
      out.eps <- bnlogl(y, beta.eps, sigma.eps, nmiss, x, z, i, moo)
      my.gradient[j] <- (out.eps$value - out$value) / epsilon
  }
+## IGNORE_RDIFF_BEGIN
  print(my.gradient)
+## IGNORE_RDIFF_END
 
  set.seed(42)
  out <- bnlogl(y, beta, sigma, nmiss, x, z, i, moo, deriv = 3)
+## IGNORE_RDIFF_BEGIN
  print(out)
+## IGNORE_RDIFF_END
  all.equal(out$gradient, my.gradient, tolerance = tol)
  
  my.hessian <- matrix(0, nparm, nparm)
@@ -67,7 +75,9 @@
      out.eps <- bnlogl(y, beta.eps, sigma.eps, nmiss, x, z, i, moo, deriv = 1)
      my.hessian[ , j] <- (out.eps$gradient - out$gradient) / epsilon
  }
+## IGNORE_RDIFF_BEGIN
  print(my.hessian)
+## IGNORE_RDIFF_END
 
  all.equal(out$hessian, my.hessian, tolerance = tol)
  
@@ -79,6 +89,8 @@
  }
  my.bigv <- my.bigv / ncol(y)
 
+## IGNORE_RDIFF_BEGIN
  print(my.bigv)
+## IGNORE_RDIFF_END
  all.equal(out$bigv, my.bigv)
 

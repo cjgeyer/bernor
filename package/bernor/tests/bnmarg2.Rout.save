@@ -1,7 +1,7 @@
 
-R : Copyright 2005, The R Foundation for Statistical Computing
-Version 2.2.0 beta (2005-09-26 r35681)
-ISBN 3-900051-07-0
+R version 4.3.2 (2023-10-31) -- "Eye Holes"
+Copyright (C) 2023 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -12,7 +12,7 @@ Type 'contributors()' for more information and
 'citation()' on how to cite R or R packages in publications.
 
 Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for a HTML browser interface to help.
+'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
 > 
@@ -30,6 +30,7 @@ Type 'q()' to quit R.
 >  nmiss <- 100
 >  set.seed(42)
 >  out <- bnmarg(y[ , 1], beta, sigma, nmiss, x, z, i, moo, want.weights = TRUE)
+> ## IGNORE_RDIFF_BEGIN
 >  print(out)
 $value
 [1] -111.7695
@@ -56,6 +57,7 @@ $weigh
  [91] 5.154033e-07 1.799259e-07 3.289464e-07 5.986552e-07 2.797820e-06
  [96] 1.457501e-07 6.985229e-07 3.862132e-08 3.274260e-06 6.863988e-10
 
+> ## IGNORE_RDIFF_END
 > 
 >  my.bnmarg <- function(y, beta, sigma, nmiss, x, z, iv, model) {
 +      logf <- rep(NA, nmiss)
@@ -75,6 +77,7 @@ $weigh
 > 
 >  set.seed(42)
 >  my.out <- my.bnmarg(y[ , 1], beta, sigma, nmiss, x, z, i, moo)
+> ## IGNORE_RDIFF_BEGIN
 >  print(my.out)
 $value
 [1] -111.7695
@@ -101,6 +104,7 @@ $weigh
  [91] 5.154033e-07 1.799259e-07 3.289464e-07 5.986552e-07 2.797820e-06
  [96] 1.457501e-07 6.985229e-07 3.862132e-08 3.274260e-06 6.863988e-10
 
+> ## IGNORE_RDIFF_END
 >  all.equal(out, my.out, tolerance = tol)
 [1] TRUE
 > 
@@ -120,11 +124,14 @@ $weigh
 +      out.eps <- bnmarg(y[ , 1], beta.eps, sigma.eps, nmiss, x, z, i, moo)
 +      my.gradient[j] <- (out.eps$value - out$value) / epsilon
 +  }
+> ## IGNORE_RDIFF_BEGIN
 >  print(my.gradient)
-[1]  3.7548020  2.4139538  0.5343495 -0.7768023 -1.7539691 -0.1650022
+[1]  3.7548006  2.4139538  0.5343495 -0.7768008 -1.7539705 -0.1650037
+> ## IGNORE_RDIFF_END
 > 
 >  set.seed(42)
 >  out <- bnmarg(y[ , 1], beta, sigma, nmiss, x, z, i, moo, deriv = 2)
+> ## IGNORE_RDIFF_BEGIN
 >  print(out)
 $value
 [1] -111.7695
@@ -141,8 +148,9 @@ $hessian
 [5,]  -0.9744157 -0.4510997  -0.7959727 -0.2735242  1.0320685  1.2481322
 [6,]  -1.2771878 -0.9706873  -0.9758644 -0.5854356  1.2481322  0.8192167
 
+> ## IGNORE_RDIFF_END
 >  all.equal(out$gradient, my.gradient, tolerance = tol)
-[1] "Mean relative  difference: 1.352442e-06"
+[1] "Mean relative difference: 1.092529e-06"
 >  
 >  my.hessian <- matrix(0, nparm, nparm)
 >  for (j in 1:nparm) {
@@ -158,16 +166,21 @@ $hessian
 +          deriv = 1)
 +      my.hessian[ , j] <- (out.eps$gradient - out$gradient) / epsilon
 +  }
+> ## IGNORE_RDIFF_BEGIN
 >  print(my.hessian)
             [,1]       [,2]        [,3]       [,4]       [,5]       [,6]
-[1,] -20.8833725 -8.6094278 -12.0518883 -5.4483265 -0.9744153 -1.2771882
-[2,]  -8.6094283 -8.7141967  -5.3780701 -5.5234942 -0.4510992 -0.9706874
-[3,] -12.0518875 -5.3780688 -11.9910100 -5.3981153 -0.7959715 -0.9758645
-[4,]  -5.4483261 -5.5234940  -5.3981155 -5.5425710 -0.2735235 -0.5854358
-[5,]  -0.9744201 -0.4511032  -0.7959752 -0.2735254  1.0320651  1.2481308
-[6,]  -1.2771901 -0.9706896  -0.9758661 -0.5854361  1.2481294  0.8192162
+[1,] -20.8833725 -8.6094277 -12.0518882 -5.4483263 -0.9744153 -1.2771878
+[2,]  -8.6094285 -8.7141968  -5.3780703 -5.5234940 -0.4510995 -0.9706873
+[3,] -12.0518880 -5.3780691 -11.9910103 -5.3981147 -0.7959719 -0.9758642
+[4,]  -5.4483264 -5.5234942  -5.3981158 -5.5425707 -0.2735237 -0.5854357
+[5,]  -0.9744181 -0.4511024  -0.7959745 -0.2735274  1.0320660  1.2481309
+[6,]  -1.2771886 -0.9706889  -0.9758654 -0.5854376  1.2481303  0.8192162
+> ## IGNORE_RDIFF_END
 > 
 >  all.equal(out$hessian, my.hessian, tolerance = tol)
 [1] TRUE
 >  
 > 
+> proc.time()
+   user  system elapsed 
+  0.279   0.033   0.303 

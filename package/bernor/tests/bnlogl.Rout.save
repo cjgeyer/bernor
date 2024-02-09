@@ -1,7 +1,7 @@
 
-R : Copyright 2005, The R Foundation for Statistical Computing
-Version 2.2.0 beta (2005-09-26 r35681)
-ISBN 3-900051-07-0
+R version 4.3.2 (2023-10-31) -- "Eye Holes"
+Copyright (C) 2023 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -12,7 +12,7 @@ Type 'contributors()' for more information and
 'citation()' on how to cite R or R packages in publications.
 
 Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for a HTML browser interface to help.
+'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
 > 
@@ -30,10 +30,12 @@ Type 'q()' to quit R.
 >  nmiss <- 100
 >  set.seed(42)
 >  out <- bnlogl(y, beta, sigma, nmiss, x, z, i, moo)
+> ## IGNORE_RDIFF_BEGIN
 >  print(out)
 $value
 [1] -236.477
 
+> ## IGNORE_RDIFF_END
 > 
 >  my.bnlogl <- function(y, beta, sigma, nmiss, x, z, iv, model) {
 +      save.random.seed <- .Random.seed
@@ -48,8 +50,10 @@ $value
 > 
 >  set.seed(42)
 >  my.out <- my.bnlogl(y, beta, sigma, nmiss, x, z, i, moo)
+> ## IGNORE_RDIFF_BEGIN
 >  print(my.out)
 [1] -236.477
+> ## IGNORE_RDIFF_END
 >  all.equal(out$value, my.out, tolerance = tol)
 [1] TRUE
 > 
@@ -69,11 +73,14 @@ $value
 +      out.eps <- bnlogl(y, beta.eps, sigma.eps, nmiss, x, z, i, moo)
 +      my.gradient[j] <- (out.eps$value - out$value) / epsilon
 +  }
+> ## IGNORE_RDIFF_BEGIN
 >  print(my.gradient)
-[1]  17.258864   8.479961   7.324959   3.331326 -38.689086  -7.652167
+[1]  17.258859   8.479964   7.324954   3.331320 -38.689083  -7.652170
+> ## IGNORE_RDIFF_END
 > 
 >  set.seed(42)
 >  out <- bnlogl(y, beta, sigma, nmiss, x, z, i, moo, deriv = 3)
+> ## IGNORE_RDIFF_BEGIN
 >  print(out)
 $value
 [1] -236.477
@@ -99,6 +106,7 @@ $bigv
 [5,] -72.993407 -36.240514 -31.01198 -14.312027 166.34262  32.671796
 [6,] -24.813036  -9.357740 -10.12799  -2.962517  32.67180   8.456100
 
+> ## IGNORE_RDIFF_END
 >  all.equal(out$gradient, my.gradient, tolerance = tol)
 [1] TRUE
 >  
@@ -115,14 +123,16 @@ $bigv
 +      out.eps <- bnlogl(y, beta.eps, sigma.eps, nmiss, x, z, i, moo, deriv = 1)
 +      my.hessian[ , j] <- (out.eps$gradient - out$gradient) / epsilon
 +  }
+> ## IGNORE_RDIFF_BEGIN
 >  print(my.hessian)
            [,1]       [,2]       [,3]        [,4]        [,5]       [,6]
-[1,] -47.203373 -22.128566 -28.999676 -14.5518076   3.9907807  11.146233
-[2,] -22.128565 -21.630655 -14.088963 -13.7804292  -4.5230225   7.583566
-[3,] -28.999671 -14.088961 -29.523349 -14.6015952   1.9120171  12.810135
-[4,] -14.551805 -13.780427 -14.601596 -14.4885602  -0.7826882   9.594307
-[5,]   3.990774  -4.523029   1.912014  -0.7826891 -26.2604217 -11.833016
-[6,]  11.146232   7.583567  12.810132   9.5943007 -11.8329917 -14.028077
+[1,] -47.203372 -22.128564 -28.999676 -14.5518076   3.9907835  11.146236
+[2,] -22.128565 -21.630654 -14.088964 -13.7804298  -4.5230218   7.583568
+[3,] -28.999671 -14.088960 -29.523349 -14.6015952   1.9120184  12.810136
+[4,] -14.551805 -13.780427 -14.601596 -14.4885607  -0.7826874   9.594308
+[5,]   3.990773  -4.523031   1.912016  -0.7826877 -26.2604232 -11.833018
+[6,]  11.146233   7.583569  12.810132   9.5943001 -11.8329901 -14.028076
+> ## IGNORE_RDIFF_END
 > 
 >  all.equal(out$hessian, my.hessian, tolerance = tol)
 [1] TRUE
@@ -135,6 +145,7 @@ $bigv
 +  }
 >  my.bigv <- my.bigv / ncol(y)
 > 
+> ## IGNORE_RDIFF_BEGIN
 >  print(my.bigv)
            [,1]       [,2]      [,3]       [,4]      [,5]       [,6]
 [1,]  87.518169  25.945554  35.67212   6.782284 -72.99341 -24.813036
@@ -143,7 +154,11 @@ $bigv
 [4,]   6.782284   3.528126   2.74818   1.288596 -14.31203  -2.962517
 [5,] -72.993407 -36.240514 -31.01198 -14.312027 166.34262  32.671796
 [6,] -24.813036  -9.357740 -10.12799  -2.962517  32.67180   8.456100
+> ## IGNORE_RDIFF_END
 >  all.equal(out$bigv, my.bigv)
 [1] TRUE
 > 
 > 
+> proc.time()
+   user  system elapsed 
+  0.380   0.021   0.393 

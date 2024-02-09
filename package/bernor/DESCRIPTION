@@ -1,10 +1,10 @@
 Package: bernor
-Version: 0.3-12
-Date: 2018-08-09
+Version: 0.3-13
+Date: 2024-02-08
 Title: Bernoulli Regression with Normal Random Effects
-Author: Charles J. Geyer <charlie@stat.umn.edu> and
+Author: Charles J. Geyer <geyer@umn.edu> and
     Yun Ju Sung <yunju@wustl.edu>
-Maintainer: Charles J. Geyer <charlie@stat.umn.edu>
+Maintainer: Charles J. Geyer <geyer@umn.edu>
 Depends: R (>= 3.0.2)
 Description: Does maximum likelihood for Bernoulli generalized linear
     mixed models (GLMM) using ordinary Monte Carlo (OMC) to calculate

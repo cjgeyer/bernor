@@ -12,7 +12,9 @@
  b <- rnorm(ncol(z))
 
  out <- bernor(y[ , 1], beta, b, sigma, x, z, i)
+## IGNORE_RDIFF_BEGIN
  print(out)
+## IGNORE_RDIFF_END
 
  my.bernor <- function(y, beta, b, sigma, x, z, i) {
      eta <- x %*% beta + z %*% (sigma[i] * b)
@@ -21,7 +23,9 @@
  }
 
  my.value <- my.bernor(y[ , 1], beta, b, sigma, x, z, i)
+## IGNORE_RDIFF_BEGIN
  print(my.value)
+## IGNORE_RDIFF_END
  all.equal(out$value, my.value, tolerance = tol)
 
  nparm <- length(beta) + length(sigma)
@@ -39,10 +43,14 @@
      out.eps <- bernor(y[ , 1], beta.eps, b, sigma.eps, x, z, i)
      my.gradient[j] <- (out.eps$value - out$value) / epsilon
  }
+## IGNORE_RDIFF_BEGIN
  print(my.gradient)
+## IGNORE_RDIFF_END
 
  out <- bernor(y[ , 1], beta, b, sigma, x, z, i, deriv = 2)
+## IGNORE_RDIFF_BEGIN
  print(out)
+## IGNORE_RDIFF_END
  all.equal(out$gradient, my.gradient, tolerance = tol)
  
  my.hessian <- matrix(0, nparm, nparm)
@@ -57,7 +65,9 @@
      out.eps <- bernor(y[ , 1], beta.eps, b, sigma.eps, x, z, i, deriv = 1)
      my.hessian[ , j] <- (out.eps$gradient - out$gradient) / epsilon
  }
+## IGNORE_RDIFF_BEGIN
  print(my.hessian)
+## IGNORE_RDIFF_END
 
  all.equal(out$hessian, my.hessian, tolerance = tol)
  

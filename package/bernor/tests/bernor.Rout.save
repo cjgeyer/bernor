@@ -1,6 +1,7 @@
 
-R : Copyright 2004, The R Foundation for Statistical Computing
-Version 1.9.1  (2004-06-21), ISBN 3-900051-00-3
+R version 4.3.2 (2023-10-31) -- "Eye Holes"
+Copyright (C) 2023 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -8,10 +9,10 @@ Type 'license()' or 'licence()' for distribution details.
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
-'citation()' on how to cite R in publications.
+'citation()' on how to cite R or R packages in publications.
 
 Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for a HTML browser interface to help.
+'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
 > 
@@ -28,10 +29,12 @@ Type 'q()' to quit R.
 >  b <- rnorm(ncol(z))
 > 
 >  out <- bernor(y[ , 1], beta, b, sigma, x, z, i)
+> ## IGNORE_RDIFF_BEGIN
 >  print(out)
 $value
 [1] -179.9018
 
+> ## IGNORE_RDIFF_END
 > 
 >  my.bernor <- function(y, beta, b, sigma, x, z, i) {
 +      eta <- x %*% beta + z %*% (sigma[i] * b)
@@ -40,8 +43,10 @@ $value
 +  }
 > 
 >  my.value <- my.bernor(y[ , 1], beta, b, sigma, x, z, i)
+> ## IGNORE_RDIFF_BEGIN
 >  print(my.value)
 [1] -179.9018
+> ## IGNORE_RDIFF_END
 >  all.equal(out$value, my.value, tolerance = tol)
 [1] TRUE
 > 
@@ -60,10 +65,13 @@ $value
 +      out.eps <- bernor(y[ , 1], beta.eps, b, sigma.eps, x, z, i)
 +      my.gradient[j] <- (out.eps$value - out$value) / epsilon
 +  }
+> ## IGNORE_RDIFF_BEGIN
 >  print(my.gradient)
-[1] -21.155472 -17.045102  -3.699526  -1.917746 -24.135412 -18.003811
+[1] -21.155475 -17.045105  -3.699526  -1.917746 -24.135412 -18.003811
+> ## IGNORE_RDIFF_END
 > 
 >  out <- bernor(y[ , 1], beta, b, sigma, x, z, i, deriv = 2)
+> ## IGNORE_RDIFF_BEGIN
 >  print(out)
 $value
 [1] -179.9018
@@ -80,6 +88,7 @@ $hessian
 [5,]  -1.276337 -1.592721 -0.8674507 -0.8322702 -11.9198873   7.603559
 [6,]  12.287938  6.606332 10.5984627  5.3337604   7.6035594 -36.193863
 
+> ## IGNORE_RDIFF_END
 >  all.equal(out$gradient, my.gradient, tolerance = tol)
 [1] TRUE
 >  
@@ -95,16 +104,21 @@ $hessian
 +      out.eps <- bernor(y[ , 1], beta.eps, b, sigma.eps, x, z, i, deriv = 1)
 +      my.hessian[ , j] <- (out.eps$gradient - out$gradient) / epsilon
 +  }
+> ## IGNORE_RDIFF_BEGIN
 >  print(my.hessian)
            [,1]      [,2]       [,3]       [,4]        [,5]       [,6]
-[1,] -16.891791 -8.836126 -8.3651848 -4.0673577  -1.2763369  12.287938
-[2,]  -8.836126 -8.836126 -4.0673580 -4.0673577  -1.5927213   6.606332
-[3,]  -8.365185 -4.067358 -8.3651851 -4.0673578  -0.8674506  10.598463
-[4,]  -4.067358 -4.067358 -4.0673579 -4.0673578  -0.8322701   5.333760
-[5,]  -1.276336 -1.592721 -0.8674501 -0.8322697 -11.9198862   7.603560
-[6,]  12.287938  6.606332 10.5984626  5.3337601   7.6035601 -36.193863
+[1,] -16.891791 -8.836126 -8.3651848 -4.0673573  -1.2763362  12.287937
+[2,]  -8.836126 -8.836126 -4.0673584 -4.0673584  -1.5927213   6.606332
+[3,]  -8.365185 -4.067358 -8.3651846 -4.0673577  -0.8674509  10.598463
+[4,]  -4.067358 -4.067358 -4.0673578 -4.0673579  -0.8322702   5.333760
+[5,]  -1.276337 -1.592721 -0.8674508 -0.8322697 -11.9198866   7.603560
+[6,]  12.287938  6.606332 10.5984629  5.3337605   7.6035597 -36.193863
+> ## IGNORE_RDIFF_END
 > 
 >  all.equal(out$hessian, my.hessian, tolerance = tol)
 [1] TRUE
 >  
 > 
+> proc.time()
+   user  system elapsed 
+  0.213   0.029   0.228 

@@ -13,7 +13,9 @@
  nmiss <- 100
  set.seed(42)
  out <- bnmarg(y[ , 1], beta, sigma, nmiss, x, z, i, moo, want.weights = TRUE)
+## IGNORE_RDIFF_BEGIN
  print(out)
+## IGNORE_RDIFF_END
 
  my.bnmarg <- function(y, beta, sigma, nmiss, x, z, iv, model) {
      logf <- rep(NA, nmiss)
@@ -33,7 +35,9 @@
 
  set.seed(42)
  my.out <- my.bnmarg(y[ , 1], beta, sigma, nmiss, x, z, i, moo)
+## IGNORE_RDIFF_BEGIN
  print(my.out)
+## IGNORE_RDIFF_END
  all.equal(out, my.out, tolerance = tol)
 
  nparm <- length(beta) + length(sigma)
@@ -52,11 +56,15 @@
      out.eps <- bnmarg(y[ , 1], beta.eps, sigma.eps, nmiss, x, z, i, moo)
      my.gradient[j] <- (out.eps$value - out$value) / epsilon
  }
+## IGNORE_RDIFF_BEGIN
  print(my.gradient)
+## IGNORE_RDIFF_END
 
  set.seed(42)
  out <- bnmarg(y[ , 1], beta, sigma, nmiss, x, z, i, moo, deriv = 2)
+## IGNORE_RDIFF_BEGIN
  print(out)
+## IGNORE_RDIFF_END
  all.equal(out$gradient, my.gradient, tolerance = tol)
  
  my.hessian <- matrix(0, nparm, nparm)
@@ -73,7 +81,9 @@
          deriv = 1)
      my.hessian[ , j] <- (out.eps$gradient - out$gradient) / epsilon
  }
+## IGNORE_RDIFF_BEGIN
  print(my.hessian)
+## IGNORE_RDIFF_END
 
  all.equal(out$hessian, my.hessian, tolerance = tol)
  
