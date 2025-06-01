@@ -54,8 +54,11 @@
 #include <R.h>
 #include "bernor.h"
 
-typedef void (* Fp)();
-typedef struct entry { Fp d; Fp r; Fp i1; Fp i2; } Entry;
+typedef void (* FPddist)(double *x, int *hyper, double *parm, double *result);
+typedef void (* FPrdist)(int *hyper, double *parm, double *result);
+typedef void (* FPi1dist)(int *nhyper);
+typedef void (* FPi2dist)(int *hyper, int *nparm, int *nstate);
+typedef struct entry { FPddist d; FPrdist r; FPi1dist i1; FPi2dist i2; } Entry;
 
 static Entry FTab[] =
 {

@@ -78,9 +78,9 @@ bernor(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
     int nparmsq = nparm * nparm;
 #endif /* DEBUG_BAZ */
 
-    double *eta = Calloc(leny, double);
-    double *grad_eta = Calloc(leny, double);
-    double *hess_eta = Calloc(leny, double);
+    double *eta = R_Calloc(leny, double);
+    double *grad_eta = R_Calloc(leny, double);
+    double *hess_eta = R_Calloc(leny, double);
 
     int i, j, k;
 
@@ -284,9 +284,9 @@ bernor(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
     }
 
     bailout:
-        Free(eta);
-        Free(grad_eta);
-        Free(hess_eta);
+        R_Free(eta);
+        R_Free(grad_eta);
+        R_Free(hess_eta);
 }
 
 static double

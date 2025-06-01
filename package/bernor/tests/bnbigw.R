@@ -1,4 +1,6 @@
 
+ RNGversion("3.0.0")
+ 
  tol <- 1e-6
 
  library(bernor)
@@ -13,7 +15,9 @@
  nmiss <- 100
  set.seed(42)
  W <- bnbigw(y, beta, sigma, nmiss, x, z, i, moo, nbatch = nmiss)
+ ## IGNORE_RDIFF_BEGIN
  print(W)
+ ## IGNORE_RDIFF_END
 
  nobs <- ncol(y)
  nparm <- length(beta) + length(sigma)
@@ -58,7 +62,9 @@
 
  set.seed(42)
  myW <- my.bnbigw(y, beta, sigma, nmiss, x, z, i, moo, nbatch = nmiss)
+ ## IGNORE_RDIFF_BEGIN
  print(myW)
+ ## IGNORE_RDIFF_END
 
  all.equal(W, myW, tolerance = tol)
 
@@ -66,10 +72,14 @@
 
  set.seed(43)
  W <- bnbigw(y, beta, sigma, nmiss, x, z, i, moo, nbatch = 10)
+ ## IGNORE_RDIFF_BEGIN
  print(W)
+ ## IGNORE_RDIFF_END
  set.seed(43)
  myW <- my.bnbigw(y, beta, sigma, nmiss, x, z, i, moo, nbatch = 10)
+ ## IGNORE_RDIFF_BEGIN
  print(myW)
+ ## IGNORE_RDIFF_END
 
  all.equal(W, myW, tolerance = tol)
 

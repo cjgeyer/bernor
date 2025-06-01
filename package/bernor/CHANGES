@@ -45,3 +45,6 @@
         was broken, don't know how it checked before
         R core team must have tightened native routine registration checks
         pass R CMD check under R-3.5.1
+
+ 0.3-14 change calls to Calloc and Free to R_Calloc and R_Free as per
+        writing R extensions.  Required in R-4.5.0

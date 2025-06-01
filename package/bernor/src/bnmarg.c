@@ -71,9 +71,9 @@ bnmarg(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
     int i, j;
 
     double loga;
-    double *mygrad = Calloc(nparm, double);
-    double *myhess = Calloc(nparmsq, double);
-    double *b = Calloc(lenran, double);
+    double *mygrad = R_Calloc(nparm, double);
+    double *myhess = R_Calloc(nparmsq, double);
+    double *b = R_Calloc(lenran, double);
 
 #ifdef MYDEBUG
     printf("leny = %d\n", leny);
@@ -184,8 +184,8 @@ bnmarg(int *lenyin, int *lenfixin, int *lenranin, int *lenvarin,
             hess[j] /= sumweigh;
 
     bailout:
-        Free(mygrad);
-        Free(myhess);
-        Free(b);
+        R_Free(mygrad);
+        R_Free(myhess);
+        R_Free(b);
 }
 
